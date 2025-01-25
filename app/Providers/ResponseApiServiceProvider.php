@@ -11,7 +11,7 @@ class ResponseApiServiceProvider extends ServiceProvider
     public function boot()
     {
         // 200: 正常
-        Response::macro( 'ok', function ( array $data = [] ) {
+        Response::macro( 'ok', function ( mixed $data = [] ) {
             return response()->json($data, HttpFoundationResponse::HTTP_OK);
         });
 
