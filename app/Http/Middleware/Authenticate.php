@@ -8,6 +8,7 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class Authenticate
 {
@@ -22,6 +23,12 @@ class Authenticate
         // JWT検証
         try {
             $decoded = JWT::decode( $jwt, new Key(env('JWT_SECRET'), env('JWT_ALG')) );
+
+            // リフレッシュ済のトークンは無効とする
+            $isBlacklist = Redis::connection('blacklist_token')->exists( $decoded->jti );
+            if ( $isBlacklist ) {
+                throw new Exception( "This token has already been refreshed. (jti={$decoded->jti})" );
+            }
 
         } catch ( ExpiredException $e ) {
             Log::debug(__METHOD__);

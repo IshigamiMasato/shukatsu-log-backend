@@ -97,6 +97,7 @@ $app->register(App\Providers\AppServiceProvider::class);
 
 // 追加
 $app->register(App\Providers\ResponseApiServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

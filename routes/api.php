@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/login', ['uses' => 'AuthController@login']);
+$router->post('/token/refresh', ['uses' => 'AuthController@refreshToken']);
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/user', ['uses' => 'UserController@show']);
