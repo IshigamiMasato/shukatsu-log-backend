@@ -51,12 +51,14 @@ class AuthService
             }
 
             // トークン発行
+            $timestamp = time();
             $payload = [
-                'iss'  => env('APP_URL'),    // トークン発行者
-                'aud'  => env('APP_URL'),    // トークン使用者
-                'sub'  => $user->user_id,    // 認証対象のユーザ識別子
-                'iat'  => time(),            // 発行日時
-                'exp'  => time() + 60 * 60,  // 有効期限
+                'iss'  => env('APP_URL'),               // トークン発行者
+                'aud'  => env('APP_URL'),               // トークン使用者
+                'sub'  => $user->user_id,               // 認証対象のユーザ識別子
+                'iat'  => $timestamp,                   // 発行日時
+                'nbf'  => $timestamp,                   // トークン有効開始日時
+                'exp'  => $timestamp + env('JWT_TTL'),  // トークン有効期限
             ];
 
             $jwt = JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') );
