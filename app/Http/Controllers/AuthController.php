@@ -27,4 +27,15 @@ class AuthController extends Controller
 
         return $this->service->login($postedParams);
     }
+
+    public function refreshToken(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $jwt = $request->bearerToken();
+
+        if ($jwt === null) {
+            return response()->unauthorized();
+        }
+
+        return $this->service->refreshToken($jwt);
+    }
 }
