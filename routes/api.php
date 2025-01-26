@@ -17,10 +17,18 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/login', ['uses' => 'AuthController@login']);
-$router->post('/token/refresh', ['uses' => 'AuthController@refreshToken']);
+$router->group(['middleware' => ['cors']], function () use ($router) {
+    $router->options('/{any:.*}', function () use ($router) {
+        // クロスドメイン環境からのOPTIONSメソッド許可用のルーティング
+    });
+});
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->post('/logout', ['uses' => 'AuthController@logout']);
-    $router->get('/user', ['uses' => 'UserController@show']);
+$router->group(['middleware' => ['cors']], function () use ($router) {
+    $router->post('/login', ['uses' => 'AuthController@login']);
+    $router->post('/token/refresh', ['uses' => 'AuthController@refreshToken']);
+
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->post('/logout', ['uses' => 'AuthController@logout']);
+        $router->get('/user', ['uses' => 'UserController@show']);
+    });
 });

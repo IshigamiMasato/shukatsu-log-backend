@@ -61,6 +61,9 @@ $app->singleton(
 
 $app->configure('app');
 
+// 追加
+$app->configure('cors');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -78,6 +81,9 @@ $app->configure('app');
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+
+    // 追加
+    'cors' => Illuminate\Http\Middleware\HandleCors::class,
 ]);
 
 /*
