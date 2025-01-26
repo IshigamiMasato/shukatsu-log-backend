@@ -24,10 +24,10 @@ class Authenticate
         try {
             $decoded = JWT::decode( $jwt, new Key(env('JWT_SECRET'), env('JWT_ALG')) );
 
-            // リフレッシュ済のトークンは無効とする
+            // ログアウト済 または リフレッシュ済 トークンは無効とする
             $isBlacklist = Redis::connection('blacklist_token')->exists( $decoded->jti );
             if ( $isBlacklist ) {
-                throw new Exception( "This token has already been refreshed. (jti={$decoded->jti})" );
+                throw new Exception( "This token has already been logged out or refreshed. (jti={$decoded->jti})" );
             }
 
         } catch ( ExpiredException $e ) {
@@ -43,7 +43,10 @@ class Authenticate
             return response()->unauthorized();
         }
 
-        $request->merge(['user_id' => $decoded->sub]);
+        $request->merge([
+            'user_id' => $decoded->sub,
+            'jti'     => $decoded->jti,
+        ]);
 
         return $next($request);
     }

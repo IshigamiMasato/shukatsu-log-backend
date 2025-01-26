@@ -38,4 +38,12 @@ class AuthController extends Controller
 
         return $this->service->refreshToken($jwt);
     }
+
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $jwt = $request->bearerToken();
+        $jti = $request->jti;
+
+        return $this->service->logout($jwt, $jti);
+    }
 }

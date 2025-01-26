@@ -76,7 +76,7 @@ class AuthService
         }
     }
 
-    public function refreshToken(string $jwt)
+    public function refreshToken(string $jwt): \Illuminate\Http\JsonResponse
     {
         try {
             $redis = Redis::connection('refresh_token');
@@ -130,5 +130,26 @@ class AuthService
         ];
 
         return JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') );
+    }
+
+    public function logout(string $jwt, string $jti): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // トークンリフレッシュを無効とする
+            Redis::connection('refresh_token')
+                ->del($jwt);
+
+            // ログアウト後に同一トークンでの再ログイン不可とする
+            Redis::connection('blacklist_token')
+                ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
+
+            return response()->ok();
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
     }
 }
