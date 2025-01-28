@@ -29,6 +29,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->post('/logout', ['uses' => 'AuthController@logout']);
+        $router->get('/auth/check', ['uses' => 'AuthController@checkAuth']);
         $router->get('/user', ['uses' => 'UserController@show']);
     });
 });
