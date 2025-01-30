@@ -52,8 +52,7 @@ class AuthService
                 return response()->unauthorized();
             }
 
-            $jti = Str::uuid();
-            $jwt = $this->issueJWT( $user->user_id, $jti );
+            list( $jwt, $jti ) = $this->issueJWT( $user->user_id );
 
             // トークンリフレッシュ用にJWTを保存しておく
             $redis = Redis::connection('refresh_token');
@@ -90,12 +89,16 @@ class AuthService
             $userId = $info['user_id'];
             $jti    = $info['jti'];
 
-            $newJWT = $this->issueJWT( $userId, $jti );
+            list( $newJWT, $newJti ) = $this->issueJWT( $userId );
 
-            // リフレッシュトークン用のトークンを削除
+            // トークンリフレッシュ用にJWTを保存しておく
+            $redis->hmset( $newJWT, ['user_id' => $userId, 'jti' => $newJti] );
+            $redis->expire( $newJWT, env('JWT_REFRESH_TTL') );
+
+            // リフレッシュしたトークンを削除し、再リフレッシュを無効とする
             $redis->del($jwt);
 
-            // リフレッシュ前のトークンをブラックリストへ入れる
+            // リフレッシュしたトークンをブラックリストへ入れ、再利用を無効とする
             Redis::connection('blacklist_token')
                 ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
 
@@ -115,9 +118,10 @@ class AuthService
         }
     }
 
-    private function issueJWT(int $sub, string $jti): string
+    private function issueJWT(int $sub): array
     {
         $timestamp = time();
+        $jti = Str::uuid();
 
         $payload = [
             'iss' => env('APP_URL'),               // トークン発行者
@@ -129,7 +133,7 @@ class AuthService
             'jti' => $jti,                         // JWTの一意の識別子
         ];
 
-        return JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') );
+        return [ JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') ), $jti ];
     }
 
     public function logout(string $jwt, string $jti): \Illuminate\Http\JsonResponse
