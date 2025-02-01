@@ -19,6 +19,21 @@ class EventService
         $this->eventRepository = $eventRepository;
     }
 
+    public function index(int $userId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $events = $this->eventRepository->getBy(['user_id' => $userId]);
+
+            return response()->ok($events);
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
+
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
