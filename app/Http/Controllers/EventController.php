@@ -36,4 +36,18 @@ class EventController extends Controller
 
         return $this->service->store($userId, $postedParams);
     }
+
+    public function update(Request $request, int $eventId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only(['title', 'type', 'start_at', 'end_at', 'memo']);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['errors']) ) {
+            return response()->badRequest( errors: $result['errors'] );
+        }
+
+        return $this->service->update($userId, $eventId, $postedParams);
+    }
 }
