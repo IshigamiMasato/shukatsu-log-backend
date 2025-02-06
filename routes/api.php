@@ -32,7 +32,10 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
         $router->get('/auth/check', ['uses' => 'AuthController@checkAuth']);
         $router->get('/user', ['uses' => 'UserController@show']);
 
-        $router->get('/event', ['uses' => 'EventController@index']);
-        $router->post('/event', ['uses' => 'EventController@store']);
+        $router->group(['prefix' => 'event'], function () use ($router) {
+            $router->get('/', ['uses' => 'EventController@index']);
+            $router->post('/', ['uses' => 'EventController@store']);
+            $router->put('/{eventId}', ['uses' => 'EventController@update']);
+        });
     });
 });

@@ -67,4 +67,46 @@ class EventService
             return response()->internalServerError();
         }
     }
+
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'title'       => ['required', 'string'],
+            'type'        => ['required', 'int', Rule::in(array_values(config('const.event_types')))],
+            'start_at'    => ['required', 'date'],
+            'end_at'      => ['required', 'date'],
+            'memo'        => ['nullable', 'string'],
+        ]);
+
+        if ( $validator->fails() ) {
+            return ['errors' => $validator->errors()->getMessages()];
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $eventId, array $postedParams): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+
+            if ( $event === null ) {
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->eventRepository->update($event, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId})");
+            }
+
+            return response()->ok($event->fresh());
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
 }
