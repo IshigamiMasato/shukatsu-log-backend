@@ -25,4 +25,9 @@ class EventRepository
     {
         return $event->fill($postedParams)->save();
     }
+
+    public function delete(Event $event): bool
+    {
+        return $event->delete();
+    }
 }

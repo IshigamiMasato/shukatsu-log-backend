@@ -109,4 +109,29 @@ class EventService
             return response()->internalServerError();
         }
     }
+
+    public function delete(int $userId, int $eventId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+
+            if ( $event === null ) {
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->eventRepository->delete($event);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete event. (event_id={$eventId})");
+            }
+
+            return response()->ok($event);
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
 }

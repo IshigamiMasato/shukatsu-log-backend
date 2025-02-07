@@ -50,4 +50,11 @@ class EventController extends Controller
 
         return $this->service->update($userId, $eventId, $postedParams);
     }
+
+    public function delete(Request $request, int $eventId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        return $this->service->delete($userId, $eventId);
+    }
 }
