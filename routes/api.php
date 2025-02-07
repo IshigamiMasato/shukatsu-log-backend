@@ -36,6 +36,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->get('/', ['uses' => 'EventController@index']);
             $router->post('/', ['uses' => 'EventController@store']);
             $router->put('/{eventId}', ['uses' => 'EventController@update']);
+            $router->delete('/{eventId}', ['uses' => 'EventController@delete']);
         });
     });
 });
