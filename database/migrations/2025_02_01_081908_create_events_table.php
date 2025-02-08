@@ -22,7 +22,8 @@ return new class extends Migration
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->text('memo')->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at')->useCurrent()->nullable();
+            $table->dateTime('updated_at')->useCurrent()->nullable();
         });
     }
 
