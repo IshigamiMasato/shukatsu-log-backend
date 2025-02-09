@@ -40,6 +40,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
         });
 
         $router->group(['prefix' => 'company'], function () use ($router) {
+            $router->get('/', ['uses' => 'CompanyController@index']);
             $router->post('/', ['uses' => 'CompanyController@store']);
         });
     });
