@@ -76,4 +76,11 @@ class CompanyController extends Controller
 
         return $this->service->update($userId, $companyId, $postedParams);
     }
+
+    public function delete(Request $request, int $companyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        return $this->service->delete($userId, $companyId);
+    }
 }

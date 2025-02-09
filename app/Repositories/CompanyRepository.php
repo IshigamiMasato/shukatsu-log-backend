@@ -25,4 +25,9 @@ class CompanyRepository
     {
         return $company->fill($postedParams)->save();
     }
+
+    public function delete(Company $company): bool
+    {
+        return $company->delete();
+    }
 }
