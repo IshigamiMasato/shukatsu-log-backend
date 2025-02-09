@@ -82,4 +82,52 @@ class CompanyService
             return response()->internalServerError();
         }
     }
+
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'name'            => ['required', 'string'],
+            'url'             => ['nullable', 'string', 'url'],
+            'president'       => ['nullable', 'string'],
+            'address'         => ['nullable', 'string'],
+            'establish_date'  => ['nullable', 'date'],
+            'employee_number' => ['nullable', 'int'],
+            'listing_class'   => ['nullable', 'string'],
+            'benefit'         => ['nullable', 'string'],
+            'memo'            => ['nullable', 'string'],
+        ]);
+
+        $validator->setAttributeNames(['name' => '企業名']);
+
+        if ( $validator->fails() ) {
+            return ['errors' => $validator->errors()->getMessages()];
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $companyId, array $postedParams): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+
+            if ( $company === null ) {
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->companyRepository->update($company, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update company. (company_id={$companyId})");
+            }
+
+            return response()->ok($company->fresh());
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
 }

@@ -43,6 +43,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->get('/', ['uses' => 'CompanyController@index']);
             $router->get('/{companyId}', ['uses' => 'CompanyController@show']);
             $router->post('/', ['uses' => 'CompanyController@store']);
+            $router->put('/{companyId}', ['uses' => 'CompanyController@update']);
         });
     });
 });
