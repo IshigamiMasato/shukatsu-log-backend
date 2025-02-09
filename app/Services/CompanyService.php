@@ -130,4 +130,29 @@ class CompanyService
             return response()->internalServerError();
         }
     }
+
+    public function delete(int $userId, int $companyId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+
+            if ( $company === null ) {
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->companyRepository->delete($company);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete company. (company_id={$companyId})");
+            }
+
+            return response()->ok($company);
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
 }
