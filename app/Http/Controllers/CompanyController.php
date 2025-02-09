@@ -52,4 +52,28 @@ class CompanyController extends Controller
 
         return $this->service->store($userId, $postedParams);
     }
+
+    public function update(Request $request, int $companyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only([
+            'name',
+            'url',
+            'president',
+            'address',
+            'establish_date',
+            'employee_number',
+            'listing_class',
+            'benefit',
+            'memo'
+        ]);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['errors']) ) {
+            return response()->badRequest( errors: $result['errors'] );
+        }
+
+        return $this->service->update($userId, $companyId, $postedParams);
+    }
 }

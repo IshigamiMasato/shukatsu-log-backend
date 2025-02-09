@@ -20,4 +20,9 @@ class CompanyRepository
     {
         return Company::create($params);
     }
+
+    public function update(Company $company, array $postedParams): bool
+    {
+        return $company->fill($postedParams)->save();
+    }
 }
