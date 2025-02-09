@@ -38,5 +38,9 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->put('/{eventId}', ['uses' => 'EventController@update']);
             $router->delete('/{eventId}', ['uses' => 'EventController@delete']);
         });
+
+        $router->group(['prefix' => 'company'], function () use ($router) {
+            $router->post('/', ['uses' => 'CompanyController@store']);
+        });
     });
 });

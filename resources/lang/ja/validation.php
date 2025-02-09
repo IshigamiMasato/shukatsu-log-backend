@@ -154,5 +154,12 @@ return [
         'start_at' => '開始日時',
         'end_at' => '終了日時',
         'memo' => 'メモ',
+        'url' => 'URL',
+        'president' => '社長名',
+        'address' => '住所',
+        'establish_date' => '設立年月日',
+        'employee_number' => '従業員数',
+        'listing_class' => '上場区分',
+        'benefit' => '福利厚生',
     ]
 ];
