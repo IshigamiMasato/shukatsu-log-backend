@@ -58,7 +58,7 @@ class EventService
 
             $event = $this->eventRepository->create($params);
 
-            return response()->ok($event);
+            return response()->ok($event->fresh());
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
