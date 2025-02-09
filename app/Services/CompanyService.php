@@ -32,6 +32,17 @@ class CompanyService
         }
     }
 
+    public function show(int $userId, int $companyId): \Illuminate\Http\JsonResponse
+    {
+        $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+
+        if ($company === null) {
+            return response()->notFound();
+        }
+
+        return response()->ok($company);
+    }
+
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [

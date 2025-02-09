@@ -22,6 +22,13 @@ class CompanyController extends Controller
         return $this->service->index($userId);
     }
 
+    public function show(Request $request, int $companyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        return $this->service->show($userId, $companyId);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
