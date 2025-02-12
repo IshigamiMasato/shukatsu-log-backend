@@ -48,4 +48,23 @@ class ApplyController extends Controller
 
         return $this->service->store($userId, $postedParams);
     }
+
+    public function update(Request $request, int $applyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only([
+            'status',
+            'occupation',
+            'apply_route',
+            'memo',
+        ]);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['errors']) ) {
+            return response()->badRequest( errors: $result['errors'] );
+        }
+
+        return $this->service->update($userId, $applyId, $postedParams);
+    }
 }

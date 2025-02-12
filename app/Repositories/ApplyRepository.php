@@ -20,4 +20,9 @@ class ApplyRepository
     {
         return Apply::create($params);
     }
+
+    public function update(Apply $apply, array $postedParams): bool
+    {
+        return $apply->fill($postedParams)->save();
+    }
 }

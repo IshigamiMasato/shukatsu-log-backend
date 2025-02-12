@@ -96,4 +96,48 @@ class ApplyService
             return response()->internalServerError();
         }
     }
+
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'status'      => ['required', 'int', Rule::in(array_values(config('const.apply_status')))],
+            'occupation'  => ['nullable', 'string'],
+            'apply_route' => ['nullable', 'string'],
+            'memo'        => ['nullable', 'string'],
+        ]);
+
+        $validator->setAttributeNames(['status' => '選考ステータス']);
+
+        if ( $validator->fails() ) {
+            return ['errors' => $validator->errors()->getMessages()];
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $applyId, array $postedParams): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": apply not found. (apply_id={$applyId}, user_id={$userId})");
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->applyRepository->update($apply, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update company. (apply_id={$applyId})");
+            }
+
+            return response()->ok($apply->fresh());
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
 }
