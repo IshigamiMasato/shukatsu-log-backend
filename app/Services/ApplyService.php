@@ -40,6 +40,17 @@ class ApplyService
         }
     }
 
+    public function show(int $userId, int $applyId): \Illuminate\Http\JsonResponse
+    {
+        $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+
+        if ( $apply === null ) {
+            return response()->notFound();
+        }
+
+        return response()->ok($apply);
+    }
+
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
@@ -69,6 +80,7 @@ class ApplyService
 
             if ( $company === null ) {
                 Log::error( __METHOD__ . ": company not found. (company_id={$companyId}, user_id={$userId})");
+                return response()->notFound();
             }
 
             $params = array_merge(['user_id' => $userId], $postedParams);

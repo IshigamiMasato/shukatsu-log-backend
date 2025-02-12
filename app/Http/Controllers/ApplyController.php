@@ -22,6 +22,13 @@ class ApplyController extends Controller
         return $this->service->index($userId);
     }
 
+    public function show(Request $request, int $applyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        return $this->service->show($userId, $applyId);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;

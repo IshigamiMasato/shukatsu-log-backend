@@ -49,6 +49,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
 
         $router->group(['prefix' => 'apply'], function () use ($router) {
             $router->get('/', ['uses' => 'ApplyController@index']);
+            $router->get('/{applyId}', ['uses' => 'ApplyController@show']);
             $router->post('/', ['uses' => 'ApplyController@store']);
         });
     });
