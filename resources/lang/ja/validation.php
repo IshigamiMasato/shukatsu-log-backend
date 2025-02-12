@@ -161,5 +161,8 @@ return [
         'employee_number' => '従業員数',
         'listing_class' => '上場区分',
         'benefit' => '福利厚生',
+        'company_id' => '企業',
+        'occupation' => '職種',
+        'apply_route' => '応募経路',
     ]
 ];
