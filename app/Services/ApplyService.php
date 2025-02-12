@@ -128,10 +128,36 @@ class ApplyService
             $isSuccess = $this->applyRepository->update($apply, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update company. (apply_id={$applyId})");
+                throw new Exception( __METHOD__ . ": Failed update apply. (apply_id={$applyId})");
             }
 
             return response()->ok($apply->fresh());
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return response()->internalServerError();
+        }
+    }
+
+    public function delete(int $userId, int $applyId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": apply not found. (apply_id={$applyId}, user_id={$userId})");
+                return response()->notFound();
+            }
+
+            $isSuccess = $this->applyRepository->delete($apply);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete apply. (apply_id={$applyId})");
+            }
+
+            return response()->ok($apply);
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);

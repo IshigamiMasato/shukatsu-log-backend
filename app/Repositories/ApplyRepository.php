@@ -25,4 +25,9 @@ class ApplyRepository
     {
         return $apply->fill($postedParams)->save();
     }
+
+    public function delete(Apply $apply): bool
+    {
+        return $apply->delete();
+    }
 }

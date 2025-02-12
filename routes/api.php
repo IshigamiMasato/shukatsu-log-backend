@@ -52,6 +52,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->get('/{applyId}', ['uses' => 'ApplyController@show']);
             $router->post('/', ['uses' => 'ApplyController@store']);
             $router->put('/{applyId}', ['uses' => 'ApplyController@update']);
+            $router->delete('/{applyId}', ['uses' => 'ApplyController@delete']);
         });
     });
 });

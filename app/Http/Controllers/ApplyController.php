@@ -67,4 +67,11 @@ class ApplyController extends Controller
 
         return $this->service->update($userId, $applyId, $postedParams);
     }
+
+    public function delete(Request $request, int $applyId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        return $this->service->delete($userId, $applyId);
+    }
 }
