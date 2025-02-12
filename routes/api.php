@@ -46,5 +46,9 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->put('/{companyId}', ['uses' => 'CompanyController@update']);
             $router->delete('/{companyId}', ['uses' => 'CompanyController@delete']);
         });
+
+        $router->group(['prefix' => 'apply'], function () use ($router) {
+            $router->post('/', ['uses' => 'ApplyController@store']);
+        });
     });
 });
