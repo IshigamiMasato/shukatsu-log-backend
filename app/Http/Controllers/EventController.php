@@ -25,7 +25,7 @@ class EventController extends Controller
 
         if ( isset($events['error_code']) ) {
             if ( $events['error_code'] == config('api.response.code.user_not_found') ) {
-                return $this->responseNotFound( config('api.response.code.user_not_found') );
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
             }
 
             return $this->responseInternalServerError();
@@ -41,11 +41,20 @@ class EventController extends Controller
         $postedParams = $request->only(['title', 'type', 'start_at', 'end_at', 'memo']);
 
         $result = $this->service->validateStore($postedParams);
-        if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->store($userId, $postedParams);
+        $event = $this->service->store($userId, $postedParams);
+        if ( isset($event['error_code']) ) {
+            if ( $event['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new EventResource($event) );
     }
 
     public function update(Request $request, int $eventId): \Illuminate\Http\JsonResponse

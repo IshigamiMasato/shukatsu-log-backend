@@ -12,6 +12,14 @@ class Controller extends BaseController
         return response()->json($resource, Response::HTTP_OK);
     }
 
+    public function responseBadRequest(array $errors = []): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            "code" => config('api.response.code.bad_request'),
+            "errors" => $errors,
+        ], Response::HTTP_BAD_REQUEST);
+    }
+
     public function responseNotFound(string $code): \Illuminate\Http\JsonResponse
     {
         return response()->json([

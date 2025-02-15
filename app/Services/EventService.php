@@ -57,26 +57,32 @@ class EventService extends Service
         ]);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function store(int $userId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function store(int $userId, array $postedParams): \App\Models\Event|array
     {
         try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
+
             $params = array_merge(['user_id' => $userId], $postedParams);
 
             $event = $this->eventRepository->create($params);
 
-            return response()->ok($event->fresh());
+            return $event;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
