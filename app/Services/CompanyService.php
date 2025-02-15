@@ -133,34 +133,40 @@ class CompanyService extends Service
         $validator->setAttributeNames(['name' => '企業名']);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function update(int $userId, int $companyId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function update(int $userId, int $companyId, array $postedParams): \App\Models\Company|array
     {
         try {
-            $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
             if ( $company === null ) {
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
+                return $this->errorCompanyNotFound();
             }
 
             $isSuccess = $this->companyRepository->update($company, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update company. (company_id={$companyId})");
+                throw new Exception( __METHOD__ . ": Failed update company. (company_id={$companyId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
             }
 
-            return response()->ok($company->fresh());
+            return $company->fresh();
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 

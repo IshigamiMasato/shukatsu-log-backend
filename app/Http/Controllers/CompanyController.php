@@ -102,11 +102,24 @@ class CompanyController extends Controller
         ]);
 
         $result = $this->service->validateUpdate($postedParams);
-        if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->update($userId, $companyId, $postedParams);
+        $company = $this->service->update($userId, $companyId, $postedParams);
+        if ( isset($company['error_code']) ) {
+            if ( $company['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $company['error_code'] == config('api.response.code.company_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.company_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new CompanyResource($company) );
     }
 
     public function delete(Request $request, int $companyId): \Illuminate\Http\JsonResponse
