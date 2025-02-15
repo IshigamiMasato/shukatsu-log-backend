@@ -90,36 +90,40 @@ class ApplyService extends Service
         $validator->setAttributeNames(['status' => '選考ステータス']);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function store(int $userId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function store(int $userId, array $postedParams): \App\Models\Apply|array
     {
         try {
-            $companyId = $postedParams['company_id'];
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
             // 適切な企業か確認
+            $companyId = $postedParams['company_id'];
             $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
-
             if ( $company === null ) {
-                Log::error( __METHOD__ . ": company not found. (company_id={$companyId}, user_id={$userId})");
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
+                return $this->errorCompanyNotFound();
             }
 
             $params = array_merge(['user_id' => $userId], $postedParams);
 
             $apply = $this->applyRepository->create($params);
 
-            return response()->ok($apply->fresh());
+            return $apply;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
