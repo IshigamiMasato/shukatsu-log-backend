@@ -14,6 +14,13 @@ class Service
         ];
     }
 
+    public function errorUnAuthorized()
+    {
+        return [
+            'error_code' => config('api.response.code.unauthorized')
+        ];
+    }
+
     public function errorUserNotFound(): array
     {
         return [

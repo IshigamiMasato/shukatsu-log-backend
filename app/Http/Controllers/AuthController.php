@@ -20,12 +20,20 @@ class AuthController extends Controller
         $postedParams = $request->only( ['email', 'password'] );
 
         $result = $this->service->validateLogin($postedParams);
-
         if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->login($postedParams);
+        $loginResult = $this->service->login($postedParams);
+        if ( isset($loginResult['error_code']) ) {
+            if ( $loginResult['error_code'] == config('api.response.code.unauthorized') ) {
+                return $this->responseUnauthorized();
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( $loginResult );
     }
 
     public function refreshToken(Request $request): \Illuminate\Http\JsonResponse
