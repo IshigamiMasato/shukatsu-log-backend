@@ -126,6 +126,19 @@ class CompanyController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->delete($userId, $companyId);
+        $company = $this->service->delete($userId, $companyId);
+        if ( isset($company['error_code']) ) {
+            if ( $company['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $company['error_code'] == config('api.response.code.company_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.company_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new CompanyResource($company) );
     }
 }
