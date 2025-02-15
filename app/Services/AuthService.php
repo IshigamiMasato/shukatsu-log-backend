@@ -131,7 +131,7 @@ class AuthService extends Service
         return [ JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') ), $jti ];
     }
 
-    public function logout(string $jwt, string $jti): \Illuminate\Http\JsonResponse
+    public function logout(string $jwt, string $jti): bool|array
     {
         try {
             // トークンリフレッシュを無効とする
@@ -142,13 +142,13 @@ class AuthService extends Service
             Redis::connection('blacklist_token')
                 ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
 
-            return response()->ok();
+            return true;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 }

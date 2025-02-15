@@ -61,7 +61,12 @@ class AuthController extends Controller
         $jwt = $request->bearerToken();
         $jti = $request->jti;
 
-        return $this->service->logout($jwt, $jti);
+        $result = $this->service->logout($jwt, $jti);
+        if ( isset($result['error_code']) ) {
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess([]);
     }
 
     public function checkAuth(Request $request): \Illuminate\Http\JsonResponse
