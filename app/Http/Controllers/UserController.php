@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,16 @@ class UserController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->show($userId);
+        $user = $this->service->show($userId);
+
+        if ( isset($user['error_code']) ) {
+            if ( $user['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new UserResource($user) );
     }
 }

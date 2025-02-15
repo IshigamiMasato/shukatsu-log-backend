@@ -64,6 +64,7 @@ $app->configure('app');
 // 追加
 $app->configure('cors');
 $app->configure('const');
+$app->configure('api');
 
 /*
 |--------------------------------------------------------------------------
