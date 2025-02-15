@@ -37,7 +37,7 @@ class ApplyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $applies = $this->applyRepository->getBy(['user_id' => $userId]);
@@ -58,13 +58,13 @@ class ApplyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
             if ( $apply === null ) {
                 Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
-                return $this->errorApplyNotFound();
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
             }
 
             return $apply;
@@ -102,7 +102,7 @@ class ApplyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             // 適切な企業か確認
@@ -110,7 +110,7 @@ class ApplyService extends Service
             $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
             if ( $company === null ) {
                 Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
-                return $this->errorCompanyNotFound();
+                return $this->errorNotFound( config('api.response.code.company_not_found') );
             }
 
             $params = array_merge(['user_id' => $userId], $postedParams);
@@ -151,13 +151,13 @@ class ApplyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
             if ( $apply === null ) {
                 Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
-                return $this->errorApplyNotFound();
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
             }
 
             $isSuccess = $this->applyRepository->update($apply, $postedParams);
@@ -182,13 +182,13 @@ class ApplyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
             if ( $apply === null ) {
                 Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
-                return $this->errorApplyNotFound();
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
             }
 
             $isSuccess = $this->applyRepository->delete($apply);

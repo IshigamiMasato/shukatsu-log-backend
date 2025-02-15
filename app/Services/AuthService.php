@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class AuthService
+class AuthService extends Service
 {
     /** @var \App\Repositories\UserRepository */
     private $userRepository;
@@ -29,27 +29,26 @@ class AuthService
         ]);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function login(array $postedParams): \Illuminate\Http\JsonResponse
+    public function login(array $postedParams): array
     {
         try {
-            $user = $this->userRepository->findBy( ['email' => $postedParams['email']] );
-
             // 会員情報 存在確認
+            $user = $this->userRepository->findBy( ['email' => $postedParams['email']] );
             if ($user === null) {
-                Log::debug( __METHOD__ . ": user not found. (email = {$postedParams['email']})" );
-                return response()->notFound();
+                Log::debug( __METHOD__ . ": User not found. (email={$postedParams['email']})" );
+                return $this->errorUnAuthorized();
             }
 
             // パスワード検証
             if ( ! Hash::check( $postedParams['password'], $user->password ) ) {
-                Log::debug( __METHOD__ . ": missmatch password. (password={$postedParams['password']})" );
-                return response()->unauthorized();
+                Log::debug( __METHOD__ . ": Missmatch password. (email={$postedParams['email']}, password={$postedParams['password']})" );
+                return $this->errorUnAuthorized();
             }
 
             list( $jwt, $jti ) = $this->issueJWT( $user->user_id );
@@ -59,30 +58,28 @@ class AuthService
             $redis->hmset( $jwt, ['user_id' => $user->user_id, 'jti' => $jti] );
             $redis->expire( $jwt, env('JWT_REFRESH_TTL') );
 
-            $result = [
+            return [
                 'access_token' => $jwt,
                 'token_type'   => 'bearer',
                 'expires_in'   => env('JWT_TTL')
             ];
 
-            return response()->ok($result);
-
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
-    public function refreshToken(string $jwt): \Illuminate\Http\JsonResponse
+    public function refreshToken(string $jwt): array
     {
         try {
             $redis = Redis::connection('refresh_token');
 
             // リフレッシュ可能な期間を過ぎている場合
             if ( ! $redis->exists($jwt) ) {
-                return response()->unauthorized(code: 'INVALID_REFRESH_TOKEN', message: '指定されたトークンが不正です。');
+                return $this->errorUnAuthorized( config('api.response.code.invalid_refresh_token') );
             }
 
             $info = $redis->hgetall($jwt);
@@ -102,19 +99,17 @@ class AuthService
             Redis::connection('blacklist_token')
                 ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
 
-            $result = [
+            return [
                 'access_token' => $newJWT,
                 'token_type'   => 'bearer',
                 'expires_in'   => env('JWT_TTL')
             ];
 
-            return response()->ok($result);
-
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
@@ -136,7 +131,7 @@ class AuthService
         return [ JWT::encode( $payload, env('JWT_SECRET'), env('JWT_ALG') ), $jti ];
     }
 
-    public function logout(string $jwt, string $jti): \Illuminate\Http\JsonResponse
+    public function logout(string $jwt, string $jti): bool|array
     {
         try {
             // トークンリフレッシュを無効とする
@@ -147,13 +142,13 @@ class AuthService
             Redis::connection('blacklist_token')
                 ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
 
-            return response()->ok();
+            return true;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Symfony\Component\HttpFoundation\Response;
-
 class Service
 {
     public function errorBadRequest(array $errors = []): array
@@ -14,31 +12,17 @@ class Service
         ];
     }
 
-    public function errorUserNotFound(): array
+    public function errorUnAuthorized(?string $code = null): array
     {
         return [
-            'error_code' => config('api.response.code.user_not_found')
+            'error_code' => $code ? $code : config('api.response.code.unauthorized')
         ];
     }
 
-    public function errorEventNotFound(): array
+    public function errorNotFound(?string $code = null): array
     {
         return [
-            'error_code' => config('api.response.code.event_not_found')
-        ];
-    }
-
-    public function errorCompanyNotFound(): array
-    {
-        return [
-            'error_code' => config('api.response.code.company_not_found')
-        ];
-    }
-
-    public function errorApplyNotFound(): array
-    {
-        return [
-            'error_code' => config('api.response.code.apply_not_found')
+            'error_code' => $code ? $code : config('api.response.code.not_found')
         ];
     }
 
