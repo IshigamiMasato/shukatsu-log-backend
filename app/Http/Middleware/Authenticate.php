@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\ResponseTrait;
 use Closure;
 use Exception;
 use Firebase\JWT\ExpiredException;
@@ -12,12 +13,14 @@ use Illuminate\Support\Facades\Redis;
 
 class Authenticate
 {
+    use ResponseTrait;
+
     public function handle($request, Closure $next)
     {
         $jwt = $request->bearerToken();
 
         if ($jwt === null) {
-            return response()->unauthorized();
+            return $this->responseUnauthorized();
         }
 
         // JWT検証
@@ -34,13 +37,13 @@ class Authenticate
             Log::debug(__METHOD__);
             Log::debug($e);
 
-            return response()->unauthorized(code: 'EXPIRED_TOKEN');
+            return $this->responseUnauthorized( config('api.response.code.expired_token') );
 
         } catch ( Exception $e ) {
             Log::warning(__METHOD__);
             Log::warning($e);
 
-            return response()->unauthorized();
+            return $this->responseUnauthorized();
         }
 
         $request->merge([
