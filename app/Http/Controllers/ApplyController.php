@@ -98,10 +98,23 @@ class ApplyController extends Controller
 
         $result = $this->service->validateUpdate($postedParams);
         if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->update($userId, $applyId, $postedParams);
+        $apply = $this->service->update($userId, $applyId, $postedParams);
+        if ( isset($apply['error_code']) ) {
+            if ( $apply['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $apply['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new ApplyResource($apply) );
     }
 
     public function delete(Request $request, int $applyId): \Illuminate\Http\JsonResponse

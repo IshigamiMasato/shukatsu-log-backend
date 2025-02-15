@@ -139,35 +139,40 @@ class ApplyService extends Service
         $validator->setAttributeNames(['status' => '選考ステータス']);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function update(int $userId, int $applyId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function update(int $userId, int $applyId, array $postedParams): \App\Models\Apply|array
     {
         try {
-            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
             if ( $apply === null ) {
-                Log::error( __METHOD__ . ": apply not found. (apply_id={$applyId}, user_id={$userId})");
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorApplyNotFound();
             }
 
             $isSuccess = $this->applyRepository->update($apply, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update apply. (apply_id={$applyId})");
+                throw new Exception( __METHOD__ . ": Failed update apply. (apply_id={$applyId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
             }
 
-            return response()->ok($apply->fresh());
+            return $apply->fresh();
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
