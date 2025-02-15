@@ -41,10 +41,19 @@ class AuthController extends Controller
         $jwt = $request->bearerToken();
 
         if ($jwt === null) {
-            return response()->unauthorized();
+            return $this->responseUnauthorized();
         }
 
-        return $this->service->refreshToken($jwt);
+        $result = $this->service->refreshToken($jwt);
+        if ( isset($result['error_code']) ) {
+            if ( $result['error_code'] == config('api.response.code.invalid_refresh_token') ) {
+                return $this->responseUnauthorized( config('api.response.code.invalid_refresh_token') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( $result );
     }
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse

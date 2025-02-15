@@ -14,10 +14,10 @@ class Service
         ];
     }
 
-    public function errorUnAuthorized()
+    public function errorUnAuthorized(?string $code = null)
     {
         return [
-            'error_code' => config('api.response.code.unauthorized')
+            'error_code' => $code ? $code : config('api.response.code.unauthorized')
         ];
     }
 

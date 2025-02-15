@@ -20,10 +20,10 @@ class Controller extends BaseController
         ], Response::HTTP_BAD_REQUEST);
     }
 
-    public function responseUnauthorized(): \Illuminate\Http\JsonResponse
+    public function responseUnauthorized(?string $code = null): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            "code" => config('api.response.code.unauthorized'),
+            "code" => $code ? $code : config('api.response.code.unauthorized'),
         ], Response::HTTP_UNAUTHORIZED);
     }
 

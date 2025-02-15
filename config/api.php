@@ -5,6 +5,7 @@ return [
         "code" => [
             "bad_request" => "BAD_REQUEST",
             "unauthorized" => "UNAUTHORIZED",
+            "invalid_refresh_token" => "INVALID_REFRESH_TOKEN",
             "user_not_found" => "USER_NOT_FOUND",
             "event_not_found" => "EVENT_NOT_FOUND",
             "company_not_found" => "COMPANY_NOT_FOUND",

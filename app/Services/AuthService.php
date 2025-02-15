@@ -72,14 +72,14 @@ class AuthService extends Service
         }
     }
 
-    public function refreshToken(string $jwt): \Illuminate\Http\JsonResponse
+    public function refreshToken(string $jwt): array
     {
         try {
             $redis = Redis::connection('refresh_token');
 
             // リフレッシュ可能な期間を過ぎている場合
             if ( ! $redis->exists($jwt) ) {
-                return response()->unauthorized(code: 'INVALID_REFRESH_TOKEN', message: '指定されたトークンが不正です。');
+                return $this->errorUnAuthorized( config('api.response.code.invalid_refresh_token') );
             }
 
             $info = $redis->hgetall($jwt);
@@ -99,19 +99,17 @@ class AuthService extends Service
             Redis::connection('blacklist_token')
                 ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
 
-            $result = [
+            return [
                 'access_token' => $newJWT,
                 'token_type'   => 'bearer',
                 'expires_in'   => env('JWT_TTL')
             ];
 
-            return response()->ok($result);
-
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
