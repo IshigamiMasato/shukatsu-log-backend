@@ -88,6 +88,19 @@ class EventController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->delete($userId, $eventId);
+        $event = $this->service->delete($userId, $eventId);
+        if ( isset($event['error_code']) ) {
+            if ( $event['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $event['error_code'] == config('api.response.code.event_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.event_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new EventResource($event) );
     }
 }

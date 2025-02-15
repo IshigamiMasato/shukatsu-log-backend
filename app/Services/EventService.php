@@ -121,7 +121,7 @@ class EventService extends Service
             $isSuccess = $this->eventRepository->update($event, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId}, user_id={$userId}, posted_params=" . json_encode($postedParams) . ")");
+                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
             }
 
             return $event->fresh();
@@ -134,28 +134,34 @@ class EventService extends Service
         }
     }
 
-    public function delete(int $userId, int $eventId): \Illuminate\Http\JsonResponse
+    public function delete(int $userId, int $eventId): \App\Models\Event|array
     {
         try {
-            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
+                return $this->errorEventNotFound();
             }
 
             $isSuccess = $this->eventRepository->delete($event);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed delete event. (event_id={$eventId})");
+                throw new Exception( __METHOD__ . ": Failed delete event. (user_id={$userId}, event_id={$eventId})");
             }
 
-            return response()->ok($event);
+            return $event;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 }
