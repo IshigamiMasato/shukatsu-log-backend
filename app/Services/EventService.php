@@ -31,7 +31,7 @@ class EventService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $events = $this->eventRepository->getBy(['user_id' => $userId]);
@@ -69,7 +69,7 @@ class EventService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $params = array_merge(['user_id' => $userId], $postedParams);
@@ -109,13 +109,13 @@ class EventService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
                 Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
-                return $this->errorEventNotFound();
+                return $this->errorNotFound( config('api.response.code.event_not_found') );
             }
 
             $isSuccess = $this->eventRepository->update($event, $postedParams);
@@ -140,13 +140,13 @@ class EventService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
                 Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
-                return $this->errorEventNotFound();
+                return $this->errorNotFound( config('api.response.code.event_not_found') );
             }
 
             $isSuccess = $this->eventRepository->delete($event);

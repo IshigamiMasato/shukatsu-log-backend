@@ -30,7 +30,7 @@ class CompanyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $companies = $this->companyRepository->getBy(['user_id' => $userId]);
@@ -51,13 +51,13 @@ class CompanyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
             if ( $company === null ) {
                 Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
-                return $this->errorCompanyNotFound();
+                return $this->errorNotFound( config('api.response.code.company_not_found') );
             }
 
             return $company;
@@ -99,7 +99,7 @@ class CompanyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $params = array_merge(['user_id' => $userId], $postedParams);
@@ -145,13 +145,13 @@ class CompanyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
             if ( $company === null ) {
                 Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
-                return $this->errorCompanyNotFound();
+                return $this->errorNotFound( config('api.response.code.company_not_found') );
             }
 
             $isSuccess = $this->companyRepository->update($company, $postedParams);
@@ -176,13 +176,13 @@ class CompanyService extends Service
             $user = $this->userRepository->find($userId);
             if ( $user === null ) {
                 Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
-                return $this->errorUserNotFound();
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
             $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
             if ( $company === null ) {
                 Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
-                return $this->errorCompanyNotFound();
+                return $this->errorNotFound( config('api.response.code.company_not_found') );
             }
 
             $isSuccess = $this->companyRepository->delete($company);
