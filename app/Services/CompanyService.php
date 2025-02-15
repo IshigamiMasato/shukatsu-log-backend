@@ -3,32 +3,45 @@
 namespace App\Services;
 
 use App\Repositories\CompanyRepository;
+use App\Repositories\UserRepository;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class CompanyService
+class CompanyService extends Service
 {
     /** @var \App\Repositories\CompanyRepository */
     private $companyRepository;
 
-    public function __construct(CompanyRepository $companyRepository)
-    {
+    /** @var \App\Repositories\UserRepository */
+    private $userRepository;
+
+    public function __construct(
+        CompanyRepository $companyRepository,
+        UserRepository $userRepository,
+    ) {
         $this->companyRepository = $companyRepository;
+        $this->userRepository = $userRepository;
     }
 
-    public function index(int $userId): \Illuminate\Http\JsonResponse
+    public function index(int $userId): \Illuminate\Database\Eloquent\Collection|array
     {
         try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
+
             $companies = $this->companyRepository->getBy(['user_id' => $userId]);
 
-            return response()->ok($companies);
+            return $companies;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 

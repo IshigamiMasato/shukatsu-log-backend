@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CompanyResource;
 use App\Services\CompanyService;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,16 @@ class CompanyController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->index($userId);
+        $companies = $this->service->index($userId);
+        if ( isset($companies['error_code']) ) {
+            if ( $companies['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( CompanyResource::collection($companies) );
     }
 
     public function show(Request $request, int $companyId): \Illuminate\Http\JsonResponse
