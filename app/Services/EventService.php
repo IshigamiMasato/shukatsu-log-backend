@@ -2,35 +2,47 @@
 
 namespace App\Services;
 
-use App\Models\Event;
 use App\Repositories\EventRepository;
+use App\Repositories\UserRepository;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class EventService
+class EventService extends Service
 {
     /** @var \App\Repositories\EventRepository */
     private $eventRepository;
 
-    public function __construct(EventRepository $eventRepository)
-    {
+    /** @var \App\Repositories\UserRepository */
+    private $userRepository;
+
+    public function __construct(
+        EventRepository $eventRepository,
+        UserRepository $userRepository,
+    ) {
         $this->eventRepository = $eventRepository;
+        $this->userRepository = $userRepository;
     }
 
-    public function index(int $userId): \Illuminate\Http\JsonResponse
+    public function index(int $userId): \Illuminate\Database\Eloquent\Collection|array
     {
         try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
+
             $events = $this->eventRepository->getBy(['user_id' => $userId]);
 
-            return response()->ok($events);
+            return $events;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
@@ -45,26 +57,32 @@ class EventService
         ]);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function store(int $userId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function store(int $userId, array $postedParams): \App\Models\Event|array
     {
         try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
+
             $params = array_merge(['user_id' => $userId], $postedParams);
 
             $event = $this->eventRepository->create($params);
 
-            return response()->ok($event->fresh());
+            return $event;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
@@ -79,59 +97,71 @@ class EventService
         ]);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function update(int $userId, int $eventId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function update(int $userId, int $eventId, array $postedParams): \App\Models\Event|array
     {
         try {
-            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
+                return $this->errorEventNotFound();
             }
 
             $isSuccess = $this->eventRepository->update($event, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId})");
+                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
             }
 
-            return response()->ok($event->fresh());
+            return $event->fresh();
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 
-    public function delete(int $userId, int $eventId): \Illuminate\Http\JsonResponse
+    public function delete(int $userId, int $eventId): \App\Models\Event|array
     {
         try {
-            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
+                return $this->errorEventNotFound();
             }
 
             $isSuccess = $this->eventRepository->delete($event);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed delete event. (event_id={$eventId})");
+                throw new Exception( __METHOD__ . ": Failed delete event. (user_id={$userId}, event_id={$eventId})");
             }
 
-            return response()->ok($event);
+            return $event;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 }
