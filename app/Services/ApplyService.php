@@ -176,29 +176,34 @@ class ApplyService extends Service
         }
     }
 
-    public function delete(int $userId, int $applyId): \Illuminate\Http\JsonResponse
+    public function delete(int $userId, int $applyId): \App\Models\Apply|array
     {
         try {
-            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
             if ( $apply === null ) {
-                Log::error( __METHOD__ . ": apply not found. (apply_id={$applyId}, user_id={$userId})");
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorApplyNotFound();
             }
 
             $isSuccess = $this->applyRepository->delete($apply);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed delete apply. (apply_id={$applyId})");
+                throw new Exception( __METHOD__ . ": Failed delete apply. (user_id={$userId}, apply_id={$applyId})");
             }
 
-            return response()->ok($apply);
+            return $apply;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 }
