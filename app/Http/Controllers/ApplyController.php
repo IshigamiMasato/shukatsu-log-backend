@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ApplyResource;
 use App\Services\ApplyService;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,16 @@ class ApplyController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->index($userId);
+        $applies = $this->service->index($userId);
+        if ( isset($applies['error_code']) ) {
+            if ( $applies['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( ApplyResource::collection($applies) );
     }
 
     public function show(Request $request, int $applyId): \Illuminate\Http\JsonResponse
