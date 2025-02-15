@@ -97,34 +97,40 @@ class EventService extends Service
         ]);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function update(int $userId, int $eventId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function update(int $userId, int $eventId, array $postedParams): \App\Models\Event|array
     {
         try {
-            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
+            $event = $this->eventRepository->findBy(['user_id' => $userId, 'event_id' => $eventId]);
             if ( $event === null ) {
-                return response()->notFound();
+                Log::error( __METHOD__ . ": Event not found. (user_id={$userId}, event_id={$eventId})" );
+                return $this->errorEventNotFound();
             }
 
             $isSuccess = $this->eventRepository->update($event, $postedParams);
 
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId})");
+                throw new Exception( __METHOD__ . ": Failed update event. (event_id={$eventId}, user_id={$userId}, posted_params=" . json_encode($postedParams) . ")");
             }
 
-            return response()->ok($event->fresh());
+            return $event->fresh();
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 

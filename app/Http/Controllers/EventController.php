@@ -64,11 +64,24 @@ class EventController extends Controller
         $postedParams = $request->only(['title', 'type', 'start_at', 'end_at', 'memo']);
 
         $result = $this->service->validateUpdate($postedParams);
-        if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->update($userId, $eventId, $postedParams);
+        $event = $this->service->update($userId, $eventId, $postedParams);
+        if ( isset($event['error_code']) ) {
+            if ( $event['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $event['error_code'] == config('api.response.code.event_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.event_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new EventResource($event) );
     }
 
     public function delete(Request $request, int $eventId): \Illuminate\Http\JsonResponse

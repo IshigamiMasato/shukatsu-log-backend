@@ -21,6 +21,13 @@ class Service
         ];
     }
 
+    public function errorEventNotFound(): array
+    {
+        return [
+            'error_code' => config('api.response.code.event_not_found')
+        ];
+    }
+
     public function errorInternalServerError(): array
     {
         return [
