@@ -26,10 +26,10 @@ trait ResponseTrait
         ], Response::HTTP_UNAUTHORIZED);
     }
 
-    public function responseNotFound(string $code): \Illuminate\Http\JsonResponse
+    public function responseNotFound(?string $code = null): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            "code" => $code
+            "code" => $code ? $code : config('api.response.code.not_found'),
         ], Response::HTTP_NOT_FOUND);
     }
 
