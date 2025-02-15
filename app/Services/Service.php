@@ -28,6 +28,13 @@ class Service
         ];
     }
 
+    public function errorCompanyNotFound(): array
+    {
+        return [
+            'error_code' => config('api.response.code.company_not_found')
+        ];
+    }
+
     public function errorInternalServerError(): array
     {
         return [

@@ -45,15 +45,29 @@ class CompanyService extends Service
         }
     }
 
-    public function show(int $userId, int $companyId): \Illuminate\Http\JsonResponse
+    public function show(int $userId, int $companyId): \App\Models\Company|array
     {
-        $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
 
-        if ($company === null) {
-            return response()->notFound();
+            $company = $this->companyRepository->findBy(['user_id' => $userId, 'company_id' => $companyId]);
+            if ( $company === null ) {
+                Log::error( __METHOD__ . ": Company not found. (user_id={$userId}, company_id={$companyId})" );
+                return $this->errorCompanyNotFound();
+            }
+
+            return $company;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
         }
-
-        return response()->ok($company);
     }
 
     public function validateStore(array $postedParams): bool|array
