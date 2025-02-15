@@ -87,26 +87,32 @@ class CompanyService extends Service
         $validator->setAttributeNames(['name' => '企業名']);
 
         if ( $validator->fails() ) {
-            return ['errors' => $validator->errors()->getMessages()];
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
         }
 
         return true;
     }
 
-    public function store(int $userId, array $postedParams): \Illuminate\Http\JsonResponse
+    public function store(int $userId, array $postedParams): \App\Models\Company|array
     {
         try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorUserNotFound();
+            }
+
             $params = array_merge(['user_id' => $userId], $postedParams);
 
             $company = $this->companyRepository->create($params);
 
-            return response()->ok($company->fresh());
+            return $company;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
             Log::error($e);
 
-            return response()->internalServerError();
+            return $this->errorInternalServerError();
         }
     }
 

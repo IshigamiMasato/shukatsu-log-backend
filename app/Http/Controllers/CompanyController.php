@@ -69,11 +69,20 @@ class CompanyController extends Controller
         ]);
 
         $result = $this->service->validateStore($postedParams);
-        if ( isset($result['errors']) ) {
-            return response()->badRequest( errors: $result['errors'] );
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
         }
 
-        return $this->service->store($userId, $postedParams);
+        $company = $this->service->store($userId, $postedParams);
+        if ( isset($company['error_code']) ) {
+            if ( $company['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new CompanyResource($company) );
     }
 
     public function update(Request $request, int $companyId): \Illuminate\Http\JsonResponse
