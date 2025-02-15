@@ -35,6 +35,13 @@ class Service
         ];
     }
 
+    public function errorApplyNotFound(): array
+    {
+        return [
+            'error_code' => config('api.response.code.apply_not_found')
+        ];
+    }
+
     public function errorInternalServerError(): array
     {
         return [
