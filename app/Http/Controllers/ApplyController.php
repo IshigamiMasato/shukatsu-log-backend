@@ -36,7 +36,20 @@ class ApplyController extends Controller
     {
         $userId = $request->user_id;
 
-        return $this->service->show($userId, $applyId);
+        $apply = $this->service->show($userId, $applyId);
+        if ( isset($apply['error_code']) ) {
+            if ( $apply['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $apply['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new ApplyResource($apply) );
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
