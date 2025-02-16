@@ -104,7 +104,6 @@ $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 // 追加
-$app->register(App\Providers\ResponseApiServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 
 /*
