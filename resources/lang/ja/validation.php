@@ -164,5 +164,7 @@ return [
         'company_id' => '企業',
         'occupation' => '職種',
         'apply_route' => '応募経路',
+        'submission_date' => '書類提出日',
+        'extension' => '拡張子',
     ]
 ];

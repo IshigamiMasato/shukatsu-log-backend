@@ -11,11 +11,10 @@ return [
     ],
 
     'apply_status' => [
-        'document_selection' => 1, // 書類選考
-        'exam_selection' => 2, // 筆記試験等
-        'interview_arrangement' => 3, // 面接調整
-        'interview_selection' => 4, // 面接
-        'offer' => 5, // 内定
-        'final' => 6, // 選考終了
+        'document_selection' => 1, // 書類選考中
+        'exam_selection' => 2, // 筆記試験選考中
+        'interview_selection' => 3, // 面接選考中
+        'offer' => 4, // 内定
+        'final' => 5, // 選考終了
     ],
 ];

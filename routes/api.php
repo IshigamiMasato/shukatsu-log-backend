@@ -53,6 +53,10 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->post('/', ['uses' => 'ApplyController@store']);
             $router->put('/{applyId}', ['uses' => 'ApplyController@update']);
             $router->delete('/{applyId}', ['uses' => 'ApplyController@delete']);
+
+            $router->group(['prefix' => '{applyId}'], function () use ($router) {
+                $router->post('/document', ['uses' => 'DocumentController@store']);
+            });
         });
     });
 });
