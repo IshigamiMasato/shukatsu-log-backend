@@ -43,7 +43,7 @@ class DocumentService extends Service
     {
         $validator = Validator::make($postedParams, [
             'submission_date' => ['required', 'date'],
-            'base64_file'     => ['nullable', 'string'],
+            'files'           => ['nullable', 'array'],
             'memo'            => ['nullable', 'string'],
         ]);
 
@@ -82,27 +82,11 @@ class DocumentService extends Service
             ];
             $document = $this->documentRepository->create($documentParams);
 
-            // ファイルが存在すれば、ファイルを作成
-            $base64File = $postedParams['base64_file'] ?? null;
-            if ( $base64File ) {
-                $binaryFile = base64_decode($base64File);
-                if ( $binaryFile === false ) {
-                    throw new \Exception('無効なファイルです。');
-                }
-
-                $extension = $this->getExtensionFromBase64($base64File);
-                if ( $extension === null ) {
-                    throw new \Exception('無効なファイルです。');
-                }
-
-                $randomStr = Str::random(32);
-                $fileName = $randomStr . date('YmdHis') . '.' . $extension;
-                $filePath = "/documents/{$userId}/{$fileName}";
-
-                $result = Storage::disk('s3')->put($filePath, $binaryFile);
-                if ( $result === false ) {
-                    throw new \Exception('ファイルのアップロードに失敗しました。');
-                }
+            // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
+            foreach ( $postedParams['files'] as $file ) {
+                $fileName = $this->getFileName($file);
+                $filePath = $this->getFilePath($userId, $fileName);
+                $this->uploadFile($filePath, $file);
 
                 $fileParams = [
                     'document_id' => $document->document_id,
@@ -133,5 +117,37 @@ class DocumentService extends Service
         }
 
         return null;
+    }
+
+    private function getFileName(string $base64File): string
+    {
+        $extension = $this->getExtensionFromBase64($base64File);
+        if ( $extension === null ) {
+            throw new \Exception('無効なファイルです。');
+        }
+
+        $fileName =  date('YmdHis') . '_' . Str::random() . '.' . $extension;
+
+        return $fileName;
+    }
+
+    private function getFilePath(int $userId, string $fileName): string
+    {
+        return "/documents/{$userId}/{$fileName}";
+    }
+
+    private function uploadFile(string $filePath, string $base64File): bool
+    {
+        $binaryFile = base64_decode($base64File);
+        if ( $binaryFile === false ) {
+            throw new \Exception('無効なファイルです。');
+        }
+
+        $result = Storage::disk('s3')->put($filePath, $binaryFile);
+        if ( $result === false ) {
+            throw new \Exception('ファイルのアップロードに失敗しました。');
+        }
+
+        return true;
     }
 }
