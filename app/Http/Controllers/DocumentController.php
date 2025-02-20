@@ -24,7 +24,7 @@ class DocumentController extends Controller
 
         $postedParams = $request->only([
             'submission_date',
-            'base64_file',
+            'files',
             'memo'
         ]);
 
