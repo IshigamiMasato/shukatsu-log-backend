@@ -166,5 +166,6 @@ return [
         'apply_route' => '応募経路',
         'submission_date' => '書類提出日',
         'extension' => '拡張子',
+        'exam_date' => '筆記試験日',
     ]
 ];

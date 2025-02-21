@@ -56,6 +56,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
 
             $router->group(['prefix' => '{applyId}'], function () use ($router) {
                 $router->post('/document', ['uses' => 'DocumentController@store']);
+                $router->post('/exam', ['uses' => 'ExamController@store']);
             });
         });
     });
