@@ -18,6 +18,7 @@ return [
             "company_not_found" => "COMPANY_NOT_FOUND",
             "apply_not_found" => "APPLY_NOT_FOUND",
             "document_not_found" => "DOCUMENT_NOT_FOUND",
+            "exam_not_found" => "EXAM_NOT_FOUND",
 
             /* 500 */
             "internal_server_error" => "INTERNAL_SERVER_ERROR",
