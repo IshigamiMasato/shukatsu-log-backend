@@ -86,4 +86,41 @@ class InterviewService extends Service
 
         return $interview;
     }
+
+    public function delete(int $userId, int $applyId, int $interviewId): \App\Models\Interview|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $interview = $this->interviewRepository->findBy(['apply_id' => $applyId, 'interview_id' => $interviewId]);
+            if ( $interview === null ) {
+                Log::error( __METHOD__ . ": Interview not found. (user_id={$userId}, apply_id={$applyId}, interview_id={$interviewId})" );
+                return $this->errorNotFound( config('api.response.code.interview_not_found') );
+            }
+
+            $isSuccess = $this->interviewRepository->delete($interview);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete interview. (user_id={$userId}, apply_id={$applyId}, interview_id={$interviewId})");
+            }
+
+            return $interview;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }
