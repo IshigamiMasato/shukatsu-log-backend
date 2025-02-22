@@ -6,8 +6,21 @@ use App\Models\Document;
 
 class DocumentRepository
 {
+    public function findWithFilesBy(array $params): Document|null
+    {
+        return Document::query()
+                        ->with(['files'])
+                        ->where($params)
+                        ->first();
+    }
+
     public function create(array $params): Document
     {
         return Document::create($params);
+    }
+
+    public function delete(Document $document): bool
+    {
+        return $document->delete();
     }
 }

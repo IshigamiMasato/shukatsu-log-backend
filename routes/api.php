@@ -55,7 +55,11 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->delete('/{applyId}', ['uses' => 'ApplyController@delete']);
 
             $router->group(['prefix' => '{applyId}'], function () use ($router) {
-                $router->post('/document', ['uses' => 'DocumentController@store']);
+                $router->group(['prefix' => '/document'], function () use ($router) {
+                    $router->post('/', ['uses' => 'DocumentController@store']);
+                    $router->delete('/{documentId}', ['uses' => 'DocumentController@delete']);
+                });
+
                 $router->post('/exam', ['uses' => 'ExamController@store']);
                 $router->post('/interview', ['uses' => 'InterviewController@store']);
                 $router->post('/offer', ['uses' => 'OfferController@store']);

@@ -48,4 +48,28 @@ class DocumentController extends Controller
 
         return $this->responseSuccess( new DocumentResource($document) );
     }
+
+    public function delete(Request $request,int $applyId, int $documentId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $document = $this->service->delete($userId, $applyId, $documentId);
+        if ( isset($document['error_code']) ) {
+            if ( $document['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $document['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $document['error_code'] == config('api.response.code.document_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.document_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new DocumentResource($document) );
+    }
 }
