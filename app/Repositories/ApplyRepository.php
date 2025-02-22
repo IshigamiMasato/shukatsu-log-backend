@@ -11,6 +11,20 @@ class ApplyRepository
         return Apply::where($params)->first();
     }
 
+    public function findWithProcessBy(array $params): Apply|null
+    {
+        return Apply::query()
+                    ->with([
+                        'documents.files',
+                        'exams',
+                        'interviews',
+                        'offers',
+                        'finalResults',
+                    ])
+                    ->where($params)
+                    ->first();
+    }
+
     public function getBy(array $params): \Illuminate\Database\Eloquent\Collection
     {
         return Apply::where($params)->get();
