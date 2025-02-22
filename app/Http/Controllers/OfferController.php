@@ -47,4 +47,28 @@ class OfferController extends Controller
 
         return $this->responseSuccess( new OfferResource($offer) );
     }
+
+    public function delete(Request $request, int $applyId, int $offerId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $offer = $this->service->delete($userId, $applyId, $offerId);
+        if ( isset($offer['error_code']) ) {
+            if ( $offer['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.offer_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.offer_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new OfferResource($offer) );
+    }
 }
