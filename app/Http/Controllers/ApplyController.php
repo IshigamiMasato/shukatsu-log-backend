@@ -136,4 +136,24 @@ class ApplyController extends Controller
 
         return $this->responseSuccess( new ApplyResource($apply) );
     }
+
+    public function getProcess(Request $request, int $applyId)
+    {
+        $userId = $request->user_id;
+
+        $process = $this->service->getProcess($userId, $applyId);
+        if ( isset($process['error_code']) ) {
+            if ( $process['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $process['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( $process );
+    }
 }

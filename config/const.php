@@ -18,6 +18,16 @@ return [
         'final' => 5, // 選考終了
     ],
 
+    'applies' => [
+        'status' => [
+            'document_selection' => 1,
+            'exam_selection' => 2,
+            'interview_selection' => 3,
+            'offer' => 4,
+            'final' => 5,
+        ]
+    ],
+
     'final_results' => [
         'status' => [
             'passed' => 1,

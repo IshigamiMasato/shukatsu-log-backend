@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Apply;
 use App\Repositories\ApplyRepository;
 use App\Repositories\CompanyRepository;
 use App\Repositories\UserRepository;
@@ -205,5 +206,67 @@ class ApplyService extends Service
 
             return $this->errorInternalServerError();
         }
+    }
+
+    public function getProcess(int $userId, int $applyId): \Illuminate\Database\Eloquent\Collection|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findWithProcessBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $process = $this->convertProcess($apply);
+
+            return $process;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
+    /**
+     * フロント用に選考プロセスを変換
+     */
+    private function convertProcess(Apply $apply): \Illuminate\Database\Eloquent\Collection
+    {
+        $documents = $apply->documents->map(function ($document) {
+            return $document->setAttribute( 'type', config('const.applies.status.document_selection') );
+        });
+        $exams = $apply->exams->map(function ($exam) {
+            return $exam->setAttribute( 'type', config('const.applies.status.exam_selection') );
+        });
+        $interviews = $apply->interviews->map(function ($exam) {
+            return $exam->setAttribute( 'type', config('const.applies.status.interview_selection') );
+        });
+        $offers = $apply->offers->map(function ($offer) {
+            return $offer->setAttribute( 'type', config('const.applies.status.offer') );
+        });
+        $finalResults = $apply->finalResults->map(function ($offer) {
+            return $offer->setAttribute( 'type', config('const.applies.status.final') );
+        });
+
+        $process = $documents
+                    ->concat($exams)
+                    ->concat($interviews)
+                    ->concat($offers)
+                    ->concat($finalResults);
+
+        $sorted = $process->sortBy('created_at');
+
+        // 添字の振り直し
+        $values = $sorted->values();
+
+        return $values;
     }
 }
