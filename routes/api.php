@@ -70,7 +70,11 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                     $router->delete('/{interviewId}', ['uses' => 'InterviewController@delete']);
                 });
 
-                $router->post('/offer', ['uses' => 'OfferController@store']);
+                $router->group(['prefix' => '/offer'], function () use ($router) {
+                    $router->post('/', ['uses' => 'OfferController@store']);
+                    $router->delete('/{offerId}', ['uses' => 'OfferController@delete']);
+                });
+
                 $router->post('/final_result', ['uses' => 'FinalResultController@store']);
                 $router->get('/process', ['uses' => 'ApplyController@getProcess']);
             });

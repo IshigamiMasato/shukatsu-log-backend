@@ -20,6 +20,7 @@ return [
             "document_not_found" => "DOCUMENT_NOT_FOUND",
             "exam_not_found" => "EXAM_NOT_FOUND",
             "interview_not_found" => "INTERVIEW_NOT_FOUND",
+            "offer_not_found" => "OFFER_NOT_FOUND",
 
             /* 500 */
             "internal_server_error" => "INTERNAL_SERVER_ERROR",
