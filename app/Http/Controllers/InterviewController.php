@@ -46,4 +46,28 @@ class InterviewController extends Controller
 
         return $this->responseSuccess( new InterviewResource($interview) );
     }
+
+    public function delete(Request $request, int $applyId, int $interviewId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $interview = $this->service->delete($userId, $applyId, $interviewId);
+        if ( isset($interview['error_code']) ) {
+            if ( $interview['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $interview['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $interview['error_code'] == config('api.response.code.interview_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.interview_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new InterviewResource($interview) );
+    }
 }
