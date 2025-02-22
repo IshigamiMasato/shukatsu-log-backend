@@ -150,4 +150,50 @@ class DocumentService extends Service
 
         return true;
     }
+
+    public function delete(int $userId, int $applyId, int $documentId): \App\Models\Document|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $document = $this->documentRepository->findWithFilesBy(['apply_id' => $applyId, 'document_id' => $documentId]);
+            if ( $document === null ) {
+                Log::error( __METHOD__ . ": Document not found. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId})" );
+                return $this->errorNotFound( config('api.response.code.document_not_found') );
+            }
+
+            $isSuccess = $this->documentRepository->delete($document);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete document. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId})");
+            }
+
+            // 保存書類を合わせて削除
+            $files = $document->files;
+            foreach ( $files as $file ) {
+                $result = Storage::disk('s3')->delete($file->path);
+                if ( $result === false ) {
+                    Log::error( __METHOD__ . ": Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_path={$file->path})" );
+                }
+            }
+
+            return $document;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }
