@@ -169,5 +169,8 @@ return [
         'exam_date' => '筆記試験日',
         'interview_date' => '面接日',
         'interviewer_info' => '面接官情報',
+        'offer_date' => '内定通知日',
+        'salary' => '年収',
+        'condition' => '条件',
     ]
 ];
