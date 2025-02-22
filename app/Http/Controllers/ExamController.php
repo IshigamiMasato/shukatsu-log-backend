@@ -46,4 +46,28 @@ class ExamController extends Controller
 
         return $this->responseSuccess( new ExamResource($exam) );
     }
+
+    public function delete(Request $request,int $applyId, int $examId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $exam = $this->service->delete($userId, $applyId, $examId);
+        if ( isset($exam['error_code']) ) {
+            if ( $exam['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.exam_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.exam_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new ExamResource($exam) );
+    }
 }

@@ -88,4 +88,41 @@ class ExamService extends Service
 
         return $exam;
     }
+
+    public function delete(int $userId, int $applyId, int $examId): \App\Models\Exam|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $exam = $this->examRepository->findBy(['apply_id' => $applyId, 'exam_id' => $examId]);
+            if ( $exam === null ) {
+                Log::error( __METHOD__ . ": Exam not found. (user_id={$userId}, apply_id={$applyId}, exam_id={$examId})" );
+                return $this->errorNotFound( config('api.response.code.exam_not_found') );
+            }
+
+            $isSuccess = $this->examRepository->delete($exam);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete exam. (user_id={$userId}, apply_id={$applyId}, exam_id={$examId})");
+            }
+
+            return $exam;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }
