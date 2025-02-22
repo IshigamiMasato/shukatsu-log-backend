@@ -85,4 +85,41 @@ class FinalResultService extends Service
 
         return $finalResult;
     }
+
+    public function delete(int $userId, int $applyId, int $finalResultId): \App\Models\FinalResult|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $finalResult = $this->finalResultRepository->findBy(['apply_id' => $applyId, 'final_result_id' => $finalResultId]);
+            if ( $finalResult === null ) {
+                Log::error( __METHOD__ . ": Final_Result not found. (user_id={$userId}, apply_id={$applyId}, final_result_id={$finalResultId})" );
+                return $this->errorNotFound( config('api.response.code.final_result_not_found') );
+            }
+
+            $isSuccess = $this->finalResultRepository->delete($finalResult);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed delete final_result. (user_id={$userId}, apply_id={$applyId}, final_result_id={$finalResultId})");
+            }
+
+            return $finalResult;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }

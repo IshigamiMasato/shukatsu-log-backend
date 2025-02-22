@@ -75,7 +75,11 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                     $router->delete('/{offerId}', ['uses' => 'OfferController@delete']);
                 });
 
-                $router->post('/final_result', ['uses' => 'FinalResultController@store']);
+                $router->group(['prefix' => '/final_result'], function () use ($router) {
+                    $router->post('/', ['uses' => 'FinalResultController@store']);
+                    $router->delete('/{finalResultId}', ['uses' => 'FinalResultController@delete']);
+                });
+
                 $router->get('/process', ['uses' => 'ApplyController@getProcess']);
             });
         });
