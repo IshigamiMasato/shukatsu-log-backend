@@ -172,5 +172,6 @@ return [
         'offer_date' => '内定通知日',
         'salary' => '年収',
         'condition' => '条件',
+        'status' => 'ステータス',
     ]
 ];

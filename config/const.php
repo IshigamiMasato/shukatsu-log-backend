@@ -17,4 +17,12 @@ return [
         'offer' => 4, // 内定
         'final' => 5, // 選考終了
     ],
+
+    'final_results' => [
+        'status' => [
+            'passed' => 1,
+            'rejected' => 2,
+            'decline' => 3,
+        ]
+    ]
 ];
