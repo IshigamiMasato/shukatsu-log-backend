@@ -16,6 +16,30 @@ class InterviewController extends Controller
         $this->service = $interviewService;
     }
 
+    public function show(Request $request, int $applyId, int $interviewId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $interview = $this->service->show($userId, $applyId, $interviewId);
+        if ( isset($interview['error_code']) ) {
+            if ( $interview['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $interview['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $interview['error_code'] == config('api.response.code.interview_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.interview_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new InterviewResource($interview) );
+    }
+
     public function store(Request $request, int $applyId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
