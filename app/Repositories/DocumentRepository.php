@@ -6,6 +6,11 @@ use App\Models\Document;
 
 class DocumentRepository
 {
+    public function findBy(array $params): Document|null
+    {
+        return Document::where($params)->first();
+    }
+
     public function findWithFilesBy(array $params): Document|null
     {
         return Document::query()

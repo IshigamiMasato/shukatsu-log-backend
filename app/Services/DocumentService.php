@@ -54,6 +54,37 @@ class DocumentService extends Service
         return true;
     }
 
+    public function show(int $userId, int $applyId, int $documentId): \App\Models\Document|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $document = $this->documentRepository->findBy(['apply_id' => $applyId, 'document_id' => $documentId]);
+            if ( $document === null ) {
+                Log::error( __METHOD__ . ": Document not found. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId})" );
+                return $this->errorNotFound( config('api.response.code.document_not_found') );
+            }
+
+            return $document;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function store(int $userId, int $applyId, array $postedParams): \App\Models\Document|array
     {
         try {

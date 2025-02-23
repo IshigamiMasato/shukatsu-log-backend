@@ -56,6 +56,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
 
             $router->group(['prefix' => '{applyId}'], function () use ($router) {
                 $router->group(['prefix' => '/document'], function () use ($router) {
+                    $router->get('/{documentId}', ['uses' => 'DocumentController@show']);
                     $router->post('/', ['uses' => 'DocumentController@store']);
                     $router->delete('/{documentId}', ['uses' => 'DocumentController@delete']);
                 });
