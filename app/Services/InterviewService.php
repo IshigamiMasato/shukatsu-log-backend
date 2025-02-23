@@ -118,6 +118,58 @@ class InterviewService extends Service
         return $interview;
     }
 
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'interview_date'   => ['required', 'date'],
+            'interviewer_info' => ['nullable', 'string'],
+            'memo'             => ['nullable', 'string'],
+        ]);
+
+        if ( $validator->fails() ) {
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $applyId, int $interviewId, array $postedParams): \App\Models\Interview|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $interview = $this->interviewRepository->findBy(['apply_id' => $applyId, 'interview_id' => $interviewId]);
+            if ( $interview === null ) {
+                Log::error( __METHOD__ . ": Interview not found. (user_id={$userId}, apply_id={$applyId}, interview_id={$interviewId})" );
+                return $this->errorNotFound( config('api.response.code.interview_not_found') );
+            }
+
+            $isSuccess = $this->interviewRepository->update($interview, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update interview. (interview_id={$interviewId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
+            }
+
+            return $interview;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function delete(int $userId, int $applyId, int $interviewId): \App\Models\Interview|array
     {
         try {

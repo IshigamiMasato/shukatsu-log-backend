@@ -16,6 +16,11 @@ class InterviewRepository
         return Interview::create($params);
     }
 
+    public function update(Interview $interview, array $postedParams): bool
+    {
+        return $interview->fill($postedParams)->save();
+    }
+
     public function delete(Interview $interview): bool
     {
         return $interview->delete();
