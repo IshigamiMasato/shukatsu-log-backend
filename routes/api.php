@@ -84,6 +84,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                 });
 
                 $router->group(['prefix' => '/final_result'], function () use ($router) {
+                    $router->get('/{finalResultId}', ['uses' => 'FinalResultController@show']);
                     $router->post('/', ['uses' => 'FinalResultController@store']);
                     $router->delete('/{finalResultId}', ['uses' => 'FinalResultController@delete']);
                 });
