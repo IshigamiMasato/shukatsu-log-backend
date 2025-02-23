@@ -96,7 +96,7 @@ class OfferService extends Service
             DB::beginTransaction();
 
             // 応募ステータスを内定に更新
-            $this->applyRepository->update($apply, ['status' => config('const.apply_status.offer')]);
+            $this->applyRepository->update($apply, ['status' => config('const.applies.status.offer')]);
 
             $offerParams = [
                 'apply_id'   => $applyId,

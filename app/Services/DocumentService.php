@@ -103,7 +103,7 @@ class DocumentService extends Service
             DB::beginTransaction();
 
             // 応募ステータスを書類選考中に更新
-            $this->applyRepository->update($apply, ['status' => config('const.apply_status.document_selection')]);
+            $this->applyRepository->update($apply, ['status' => config('const.applies.status.document_selection')]);
 
             // 書類作成
             $documentParams = [

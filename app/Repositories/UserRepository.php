@@ -4,15 +4,10 @@ namespace App\Repositories;
 
 use App\Models\User;
 
-class UserRepository
+class UserRepository extends Repository
 {
-    public function find(int $userId): User|null
+    public function __construct()
     {
-        return User::find($userId);
-    }
-
-    public function findBy(array $params): User|null
-    {
-        return User::where($params)->first();
+        parent::__construct( User::class );
     }
 }

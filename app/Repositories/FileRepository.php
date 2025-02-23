@@ -4,10 +4,10 @@ namespace App\Repositories;
 
 use App\Models\File;
 
-class FileRepository
+class FileRepository extends Repository
 {
-    public function create(array $params): File
+    public function __construct()
     {
-        return File::create($params);
+        parent::__construct( File::class );
     }
 }

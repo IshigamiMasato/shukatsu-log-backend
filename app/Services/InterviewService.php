@@ -95,7 +95,7 @@ class InterviewService extends Service
             DB::beginTransaction();
 
             // 応募ステータスを面接選考中に更新
-            $this->applyRepository->update($apply, ['status' => config('const.apply_status.interview_selection')]);
+            $this->applyRepository->update($apply, ['status' => config('const.applies.status.interview_selection')]);
 
             $interviewParams = [
                 'apply_id'         => $applyId,

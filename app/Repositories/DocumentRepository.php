@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Document;
 
-class DocumentRepository
+class DocumentRepository extends Repository
 {
-    public function findBy(array $params): Document|null
+    public function __construct()
     {
-        return Document::where($params)->first();
+        parent::__construct( Document::class );
     }
 
     public function findWithFilesBy(array $params): Document|null
@@ -17,20 +17,5 @@ class DocumentRepository
                         ->with(['files'])
                         ->where($params)
                         ->first();
-    }
-
-    public function create(array $params): Document
-    {
-        return Document::create($params);
-    }
-
-    public function update(Document $document, array $postedParams): bool
-    {
-        return $document->fill($postedParams)->save();
-    }
-
-    public function delete(Document $document): bool
-    {
-        return $document->delete();
     }
 }

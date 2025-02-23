@@ -82,7 +82,7 @@ class ApplyService extends Service
     {
         $validator = Validator::make($postedParams, [
             'company_id'  => ['required', 'int', 'exists:companies,company_id'],
-            'status'      => ['required', 'int', Rule::in(array_values(config('const.apply_status')))],
+            'status'      => ['required', 'int', Rule::in( config('const.applies.status') )],
             'occupation'  => ['nullable', 'string'],
             'apply_route' => ['nullable', 'string'],
             'memo'        => ['nullable', 'string'],
@@ -131,7 +131,7 @@ class ApplyService extends Service
     public function validateUpdate(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
-            'status'      => ['required', 'int', Rule::in(array_values(config('const.apply_status')))],
+            'status'      => ['required', 'int', Rule::in( config('const.applies.status') )],
             'occupation'  => ['nullable', 'string'],
             'apply_route' => ['nullable', 'string'],
             'memo'        => ['nullable', 'string'],
