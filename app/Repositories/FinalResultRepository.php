@@ -16,6 +16,11 @@ class FinalResultRepository
         return FinalResult::create($params);
     }
 
+    public function update(FinalResult $finalResult, array $postedParams): bool
+    {
+        return $finalResult->fill($postedParams)->save();
+    }
+
     public function delete(FinalResult $finalResult): bool
     {
         return $finalResult->delete();
