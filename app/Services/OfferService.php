@@ -31,6 +31,37 @@ class OfferService extends Service
         $this->offerRepository = $offerRepository;
     }
 
+    public function show(int $userId, int $applyId, int $offerId): \App\Models\Offer|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $offer = $this->offerRepository->findBy(['apply_id' => $applyId, 'offer_id' => $offerId]);
+            if ( $offer === null ) {
+                Log::error( __METHOD__ . ": Offer not found. (user_id={$userId}, apply_id={$applyId}, offer_id={$offerId})" );
+                return $this->errorNotFound( config('api.response.code.offer_not_found') );
+            }
+
+            return $offer;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
