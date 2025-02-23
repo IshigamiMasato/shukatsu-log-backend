@@ -32,6 +32,37 @@ class FinalResultService extends Service
         $this->finalResultRepository = $finalResultRepository;
     }
 
+    public function show(int $userId, int $applyId, int $finalResultId): \App\Models\FinalResult|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $finalResult = $this->finalResultRepository->findBy(['apply_id' => $applyId, 'final_result_id' => $finalResultId]);
+            if ( $finalResult === null ) {
+                Log::error( __METHOD__ . ": Final_Result not found. (user_id={$userId}, apply_id={$applyId}, final_result_id={$finalResultId})" );
+                return $this->errorNotFound( config('api.response.code.final_result_not_found') );
+            }
+
+            return $finalResult;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
