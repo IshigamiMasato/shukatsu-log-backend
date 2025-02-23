@@ -16,6 +16,30 @@ class ExamController extends Controller
         $this->service = $examService;
     }
 
+    public function show(Request $request, int $applyId, int $examId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $exam = $this->service->show($userId, $applyId, $examId);
+        if ( isset($exam['error_code']) ) {
+            if ( $exam['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.exam_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.exam_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new ExamResource($exam) );
+    }
+
     public function store(Request $request, int $applyId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
