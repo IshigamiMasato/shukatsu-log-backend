@@ -72,6 +72,37 @@ class OfferController extends Controller
         return $this->responseSuccess( new OfferResource($offer) );
     }
 
+    public function update(Request $request, int $applyId, int $offerId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only(['offer_date', 'salary', 'condition', 'memo']);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
+        }
+
+        $offer = $this->service->update($userId, $applyId, $offerId, $postedParams);
+        if ( isset($offer['error_code']) ) {
+            if ( $offer['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.offer_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.offer_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new OfferResource($offer) );
+    }
+
     public function delete(Request $request, int $applyId, int $offerId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;

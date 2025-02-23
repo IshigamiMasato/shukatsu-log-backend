@@ -79,6 +79,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                 $router->group(['prefix' => '/offer'], function () use ($router) {
                     $router->get('/{offerId}', ['uses' => 'OfferController@show']);
                     $router->post('/', ['uses' => 'OfferController@store']);
+                    $router->put('/{offerId}', ['uses' => 'OfferController@update']);
                     $router->delete('/{offerId}', ['uses' => 'OfferController@delete']);
                 });
 

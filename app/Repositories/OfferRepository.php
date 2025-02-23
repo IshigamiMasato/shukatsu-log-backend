@@ -16,6 +16,11 @@ class OfferRepository
         return Offer::create($params);
     }
 
+    public function update(Offer $offer, array $postedParams): bool
+    {
+        return $offer->fill($postedParams)->save();
+    }
+
     public function delete(Offer $offer): bool
     {
         return $offer->delete();

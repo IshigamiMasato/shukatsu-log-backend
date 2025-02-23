@@ -120,6 +120,59 @@ class OfferService extends Service
         return $offer;
     }
 
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'offer_date' => ['required', 'date'],
+            'salary'     => ['nullable', 'int'],
+            'condition'  => ['nullable', 'string'],
+            'memo'       => ['nullable', 'string'],
+        ]);
+
+        if ( $validator->fails() ) {
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $applyId, int $offerId, array $postedParams): \App\Models\Offer|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $offer = $this->offerRepository->findBy(['apply_id' => $applyId, 'offer_id' => $offerId]);
+            if ( $offer === null ) {
+                Log::error( __METHOD__ . ": Offer not found. (user_id={$userId}, apply_id={$applyId}, offer_id={$offerId})" );
+                return $this->errorNotFound( config('api.response.code.offer_not_found') );
+            }
+
+            $isSuccess = $this->offerRepository->update($offer, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update offer. (offer_id={$offerId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
+            }
+
+            return $offer;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function delete(int $userId, int $applyId, int $offerId): \App\Models\Offer|array
     {
         try {
