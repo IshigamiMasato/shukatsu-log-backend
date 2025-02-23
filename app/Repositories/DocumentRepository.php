@@ -24,6 +24,11 @@ class DocumentRepository
         return Document::create($params);
     }
 
+    public function update(Document $document, array $postedParams): bool
+    {
+        return $document->fill($postedParams)->save();
+    }
+
     public function delete(Document $document): bool
     {
         return $document->delete();
