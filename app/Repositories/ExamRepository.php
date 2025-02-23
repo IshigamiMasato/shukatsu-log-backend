@@ -16,6 +16,11 @@ class ExamRepository
         return Exam::create($params);
     }
 
+    public function update(Exam $exam, array $postedParams): bool
+    {
+        return $exam->fill($postedParams)->save();
+    }
+
     public function delete(Exam $exam): bool
     {
         return $exam->delete();

@@ -120,6 +120,60 @@ class ExamService extends Service
         return $exam;
     }
 
+    public function validateUpdate(array $postedParams): bool|array
+    {
+        $validator = Validator::make($postedParams, [
+            'exam_date' => ['required', 'date'],
+            'content'   => ['required', 'string'],
+            'memo'      => ['nullable', 'string'],
+        ]);
+
+        $validator->setAttributeNames(['content' => '試験内容']);
+
+        if ( $validator->fails() ) {
+            return $this->errorBadRequest( $validator->errors()->getMessages() );
+        }
+
+        return true;
+    }
+
+    public function update(int $userId, int $applyId, int $examId, array $postedParams): \App\Models\Exam|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $exam = $this->examRepository->findBy(['apply_id' => $applyId, 'exam_id' => $examId]);
+            if ( $exam === null ) {
+                Log::error( __METHOD__ . ": Exam not found. (user_id={$userId}, apply_id={$applyId}, exam_id={$examId})" );
+                return $this->errorNotFound( config('api.response.code.exam_not_found') );
+            }
+
+            $isSuccess = $this->examRepository->update($exam, $postedParams);
+
+            if ( ! $isSuccess ) {
+                throw new Exception( __METHOD__ . ": Failed update exam. (exam_id={$examId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
+            }
+
+            return $exam;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
+
     public function delete(int $userId, int $applyId, int $examId): \App\Models\Exam|array
     {
         try {
