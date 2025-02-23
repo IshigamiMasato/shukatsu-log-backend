@@ -72,6 +72,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                 $router->group(['prefix' => '/interview'], function () use ($router) {
                     $router->get('/{interviewId}', ['uses' => 'InterviewController@show']);
                     $router->post('/', ['uses' => 'InterviewController@store']);
+                    $router->put('/{interviewId}', ['uses' => 'InterviewController@update']);
                     $router->delete('/{interviewId}', ['uses' => 'InterviewController@delete']);
                 });
 
