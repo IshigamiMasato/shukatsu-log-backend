@@ -97,7 +97,7 @@ class ExamService extends Service
             DB::beginTransaction();
 
             // 応募ステータスを筆記試験選考中に更新
-            $this->applyRepository->update($apply, ['status' => config('const.apply_status.exam_selection')]);
+            $this->applyRepository->update($apply, ['status' => config('const.applies.status.exam_selection')]);
 
             $examParams = [
                 'apply_id'  => $applyId,

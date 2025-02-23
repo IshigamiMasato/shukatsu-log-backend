@@ -50,7 +50,7 @@ class EventService extends Service
     {
         $validator = Validator::make($postedParams, [
             'title'       => ['required', 'string'],
-            'type'        => ['required', 'int', Rule::in(array_values(config('const.event_types')))],
+            'type'        => ['required', 'int', Rule::in( config('const.events.type') )],
             'start_at'    => ['required', 'date'],
             'end_at'      => ['required', 'date'],
             'memo'        => ['nullable', 'string'],
@@ -90,7 +90,7 @@ class EventService extends Service
     {
         $validator = Validator::make($postedParams, [
             'title'       => ['required', 'string'],
-            'type'        => ['required', 'int', Rule::in(array_values(config('const.event_types')))],
+            'type'        => ['required', 'int', Rule::in( config('const.events.type') )],
             'start_at'    => ['required', 'date'],
             'end_at'      => ['required', 'date'],
             'memo'        => ['nullable', 'string'],

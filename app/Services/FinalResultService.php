@@ -95,7 +95,7 @@ class FinalResultService extends Service
             DB::beginTransaction();
 
             // 応募ステータスを選考終了に更新
-            $this->applyRepository->update($apply, ['status' => config('const.apply_status.final')]);
+            $this->applyRepository->update($apply, ['status' => config('const.applies.status.final')]);
 
             $finalResultParams = [
                 'apply_id' => $applyId,
