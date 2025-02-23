@@ -4,25 +4,10 @@ namespace App\Repositories;
 
 use App\Models\FinalResult;
 
-class FinalResultRepository
+class FinalResultRepository extends Repository
 {
-    public function findBy(array $params): FinalResult|null
+    public function __construct()
     {
-        return FinalResult::where($params)->first();
-    }
-
-    public function create(array $params): FinalResult
-    {
-        return FinalResult::create($params);
-    }
-
-    public function update(FinalResult $finalResult, array $postedParams): bool
-    {
-        return $finalResult->fill($postedParams)->save();
-    }
-
-    public function delete(FinalResult $finalResult): bool
-    {
-        return $finalResult->delete();
+        parent::__construct( FinalResult::class );
     }
 }

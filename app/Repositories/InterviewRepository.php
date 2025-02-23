@@ -4,25 +4,10 @@ namespace App\Repositories;
 
 use App\Models\Interview;
 
-class InterviewRepository
+class InterviewRepository extends Repository
 {
-    public function findBy(array $params): Interview|null
+    public function __construct()
     {
-        return Interview::where($params)->first();
-    }
-
-    public function create(array $params): Interview
-    {
-        return Interview::create($params);
-    }
-
-    public function update(Interview $interview, array $postedParams): bool
-    {
-        return $interview->fill($postedParams)->save();
-    }
-
-    public function delete(Interview $interview): bool
-    {
-        return $interview->delete();
+        parent::__construct( Interview::class );
     }
 }

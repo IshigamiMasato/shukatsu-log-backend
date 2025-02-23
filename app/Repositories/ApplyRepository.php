@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Apply;
 
-class ApplyRepository
+class ApplyRepository extends Repository
 {
-    public function findBy(array $params): Apply|null
+    public function __construct()
     {
-        return Apply::where($params)->first();
+        parent::__construct( Apply::class );
     }
 
     public function findWithProcessBy(array $params): Apply|null
@@ -23,25 +23,5 @@ class ApplyRepository
                     ])
                     ->where($params)
                     ->first();
-    }
-
-    public function getBy(array $params): \Illuminate\Database\Eloquent\Collection
-    {
-        return Apply::where($params)->get();
-    }
-
-    public function create(array $params): Apply
-    {
-        return Apply::create($params);
-    }
-
-    public function update(Apply $apply, array $postedParams): bool
-    {
-        return $apply->fill($postedParams)->save();
-    }
-
-    public function delete(Apply $apply): bool
-    {
-        return $apply->delete();
     }
 }

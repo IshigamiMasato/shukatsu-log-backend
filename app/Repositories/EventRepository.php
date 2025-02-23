@@ -4,30 +4,10 @@ namespace App\Repositories;
 
 use App\Models\Event;
 
-class EventRepository
+class EventRepository extends Repository
 {
-    public function findBy(array $params): Event|null
+    public function __construct()
     {
-        return Event::where($params)->first();
-    }
-
-    public function getBy(array $params): \Illuminate\Database\Eloquent\Collection
-    {
-        return Event::where($params)->get();
-    }
-
-    public function create(array $params): Event
-    {
-        return Event::create($params);
-    }
-
-    public function update(Event $event, array $postedParams): bool
-    {
-        return $event->fill($postedParams)->save();
-    }
-
-    public function delete(Event $event): bool
-    {
-        return $event->delete();
+        parent::__construct( Event::class );
     }
 }
