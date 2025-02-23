@@ -73,6 +73,37 @@ class DocumentController extends Controller
         return $this->responseSuccess( new DocumentResource($document) );
     }
 
+    public function update(Request $request, int $applyId, int $documentId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only(['submission_date', 'memo']);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
+        }
+
+        $document = $this->service->update($userId, $applyId, $documentId, $postedParams);
+        if ( isset($document['error_code']) ) {
+            if ( $document['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $document['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $document['error_code'] == config('api.response.code.document_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.document_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new DocumentResource($document) );
+    }
+
     public function delete(Request $request,int $applyId, int $documentId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
