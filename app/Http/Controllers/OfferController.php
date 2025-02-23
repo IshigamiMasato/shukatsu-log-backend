@@ -16,6 +16,30 @@ class OfferController extends Controller
         $this->service = $offerService;
     }
 
+    public function show(Request $request, int $applyId, int $offerId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $offer = $this->service->show($userId, $applyId, $offerId);
+        if ( isset($offer['error_code']) ) {
+            if ( $offer['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $offer['error_code'] == config('api.response.code.offer_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.offer_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new OfferResource($offer) );
+    }
+
     public function store(Request $request, int $applyId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
