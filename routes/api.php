@@ -65,6 +65,7 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                 $router->group(['prefix' => '/exam'], function () use ($router) {
                     $router->get('/{examId}', ['uses' => 'ExamController@show']);
                     $router->post('/', ['uses' => 'ExamController@store']);
+                    $router->put('/{examId}', ['uses' => 'ExamController@update']);
                     $router->delete('/{examId}', ['uses' => 'ExamController@delete']);
                 });
 

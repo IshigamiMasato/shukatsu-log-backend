@@ -71,6 +71,37 @@ class ExamController extends Controller
         return $this->responseSuccess( new ExamResource($exam) );
     }
 
+    public function update(Request $request, int $applyId, int $examId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $postedParams = $request->only(['exam_date', 'content', 'memo']);
+
+        $result = $this->service->validateUpdate($postedParams);
+        if ( isset($result['error_code']) ) {
+            return $this->responseBadRequest( errors: $result['errors'] );
+        }
+
+        $exam = $this->service->update($userId, $applyId, $examId, $postedParams);
+        if ( isset($exam['error_code']) ) {
+            if ( $exam['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $exam['error_code'] == config('api.response.code.exam_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.exam_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new ExamResource($exam) );
+    }
+
     public function delete(Request $request,int $applyId, int $examId): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
