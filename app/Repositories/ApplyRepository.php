@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Apply;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class ApplyRepository extends Repository
 {
@@ -23,5 +25,15 @@ class ApplyRepository extends Repository
                     ])
                     ->where($params)
                     ->first();
+    }
+
+    public function search(int $userId, array $params): Collection
+    {
+        return Apply::query()
+            ->where('user_id', $userId)
+            ->when( isset($params['status']), function (Builder $query) use($params) {
+                $query->where('status', $params['status']);
+            })
+            ->get();
     }
 }

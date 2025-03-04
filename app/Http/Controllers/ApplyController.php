@@ -19,8 +19,9 @@ class ApplyController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
+        $postedParams = $request->all();
 
-        $applies = $this->service->index($userId);
+        $applies = $this->service->index($userId, $postedParams);
         if ( isset($applies['error_code']) ) {
             if ( $applies['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
