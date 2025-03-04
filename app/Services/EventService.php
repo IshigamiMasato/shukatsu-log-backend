@@ -25,7 +25,7 @@ class EventService extends Service
         $this->userRepository = $userRepository;
     }
 
-    public function index(int $userId): \Illuminate\Database\Eloquent\Collection|array
+    public function index(int $userId, array $postedParams): \Illuminate\Database\Eloquent\Collection|array
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -34,7 +34,7 @@ class EventService extends Service
                 return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
-            $events = $this->eventRepository->getBy(['user_id' => $userId]);
+            $events = $this->eventRepository->search($userId, $postedParams);
 
             return $events;
 
