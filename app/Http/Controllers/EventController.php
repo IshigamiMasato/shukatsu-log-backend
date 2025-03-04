@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EventResource;
 use App\Services\EventService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -20,9 +19,9 @@ class EventController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
+        $postedParams = $request->all();
 
-        $events = $this->service->index($userId);
-
+        $events = $this->service->index($userId, $postedParams);
         if ( isset($events['error_code']) ) {
             if ( $events['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
