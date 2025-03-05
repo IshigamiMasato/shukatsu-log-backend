@@ -48,13 +48,12 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
         });
 
         $router->group(['prefix' => 'apply'], function () use ($router) {
+            $router->get('/status-summary', ['uses' => 'ApplyController@getStatusSummary']);
             $router->get('/', ['uses' => 'ApplyController@index']);
             $router->get('/{applyId}', ['uses' => 'ApplyController@show']);
             $router->post('/', ['uses' => 'ApplyController@store']);
             $router->put('/{applyId}', ['uses' => 'ApplyController@update']);
             $router->delete('/{applyId}', ['uses' => 'ApplyController@delete']);
-
-            $router->get('/status-summary', ['uses' => 'ApplyController@getStatusSummary']);
 
             $router->group(['prefix' => '{applyId}'], function () use ($router) {
                 $router->group(['prefix' => '/document'], function () use ($router) {
