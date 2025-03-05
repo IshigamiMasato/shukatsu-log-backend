@@ -32,12 +32,13 @@ class ApplyRepository extends Repository
         return Apply::query()
             ->where('user_id', $userId)
             ->when( isset($params['status']), function (Builder $query) use($params) {
-                $query->where('status', $params['status']);
+                $query->whereIn('status', $params['status']);
             })
+            ->orderBy('updated_at', 'DESC')
             ->get();
     }
 
-    public function getStatusSummary(int $userId)
+    public function getStatusSummary(int $userId): Apply
     {
         return Apply::query()
             ->selectRaw("
