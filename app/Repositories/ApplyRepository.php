@@ -36,4 +36,24 @@ class ApplyRepository extends Repository
             })
             ->get();
     }
+
+    public function getStatusSummary(int $userId)
+    {
+        return Apply::query()
+            ->selectRaw("
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as document_selection_summary,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as exam_selection_summary,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as interview_selection_summary,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as offer_summary,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as final_summary
+            ", [
+                config('const.applies.status.document_selection'),
+                config('const.applies.status.exam_selection'),
+                config('const.applies.status.interview_selection'),
+                config('const.applies.status.offer'),
+                config('const.applies.status.final'),
+            ])
+            ->where('user_id', $userId)
+            ->first();
+    }
 }

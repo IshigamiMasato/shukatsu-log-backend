@@ -269,4 +269,25 @@ class ApplyService extends Service
 
         return $values;
     }
+
+    public function getStatusSummary(int $userId): Apply|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $statusSummary = $this->applyRepository->getStatusSummary($userId);
+
+            return $statusSummary;
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }

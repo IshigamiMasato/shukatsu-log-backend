@@ -54,6 +54,8 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
             $router->put('/{applyId}', ['uses' => 'ApplyController@update']);
             $router->delete('/{applyId}', ['uses' => 'ApplyController@delete']);
 
+            $router->get('/status-summary', ['uses' => 'ApplyController@getStatusSummary']);
+
             $router->group(['prefix' => '{applyId}'], function () use ($router) {
                 $router->group(['prefix' => '/document'], function () use ($router) {
                     $router->get('/{documentId}', ['uses' => 'DocumentController@show']);

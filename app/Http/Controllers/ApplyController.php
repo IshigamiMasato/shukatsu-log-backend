@@ -157,4 +157,20 @@ class ApplyController extends Controller
 
         return $this->responseSuccess( $process );
     }
+
+    public function getStatusSummary(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user_id;
+
+        $statusSummary = $this->service->getStatusSummary($userId);
+        if ( isset($statusSummary['error_code']) ) {
+            if ( $statusSummary['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( $statusSummary );
+    }
 }
