@@ -127,4 +127,32 @@ class DocumentController extends Controller
 
         return $this->responseSuccess( new DocumentResource($document) );
     }
+
+    public function download(Request $reqeust, int $applyId, int $documentId, int $fileId): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
+    {
+        $userId = $reqeust->user_id;
+
+        $result = $this->service->download($userId, $applyId, $documentId, $fileId);
+        if ( is_array($result) && isset($result['error_code']) ) {
+            if ( $result['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $result['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $result['error_code'] == config('api.response.code.document_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.document_not_found') );
+            }
+
+            if ( $result['error_code'] == config('api.response.code.file_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.file_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $result;
+    }
 }

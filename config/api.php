@@ -18,6 +18,7 @@ return [
             "company_not_found" => "COMPANY_NOT_FOUND",
             "apply_not_found" => "APPLY_NOT_FOUND",
             "document_not_found" => "DOCUMENT_NOT_FOUND",
+            "file_not_found" => "FILE_NOT_FOUND",
             "exam_not_found" => "EXAM_NOT_FOUND",
             "interview_not_found" => "INTERVIEW_NOT_FOUND",
             "offer_not_found" => "OFFER_NOT_FOUND",
