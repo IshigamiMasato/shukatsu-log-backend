@@ -278,4 +278,46 @@ class DocumentService extends Service
             return $this->errorInternalServerError();
         }
     }
+
+    public function download(int $userId, int $applyId, int $documentId, int $fileId): \Symfony\Component\HttpFoundation\StreamedResponse|array
+    {
+        try {
+            $user = $this->userRepository->find($userId);
+            if ( $user === null ) {
+                Log::error( __METHOD__ . ": User not found. (user_id={$userId})" );
+                return $this->errorNotFound( config('api.response.code.user_not_found') );
+            }
+
+            $apply = $this->applyRepository->findBy(['user_id' => $userId, 'apply_id' => $applyId]);
+            if ( $apply === null ) {
+                Log::error( __METHOD__ . ": Apply not found. (user_id={$userId}, apply_id={$applyId})" );
+                return $this->errorNotFound( config('api.response.code.apply_not_found') );
+            }
+
+            $document = $this->documentRepository->findWithFilesBy(['apply_id' => $applyId, 'document_id' => $documentId]);
+            if ( $document === null ) {
+                Log::error( __METHOD__ . ": Document not found. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId})" );
+                return $this->errorNotFound( config('api.response.code.document_not_found') );
+            }
+
+            $file = $document->files->find($fileId);
+            if ( $file === null ) {
+                Log::error( __METHOD__ . ": File not found. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId})" );
+                return $this->errorNotFound( config('api.response.code.file_not_found') );
+            }
+
+            if ( ! Storage::disk('s3')->exists($file->path) ) {
+                Log::error( __METHOD__ . ": File not found S3. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+                return $this->errorNotFound( config('api.response.code.file_not_found') );
+            }
+
+            return Storage::disk('s3')->download($file->path);
+
+        } catch ( Exception $e ) {
+            Log::error(__METHOD__);
+            Log::error($e);
+
+            return $this->errorInternalServerError();
+        }
+    }
 }
