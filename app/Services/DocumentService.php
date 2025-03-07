@@ -169,7 +169,10 @@ class DocumentService extends Service
 
     private function uploadFile(string $filePath, string $base64File): bool
     {
-        $binaryFile = base64_decode($base64File);
+        // base64エンコード時に付与される不要なプレフィックスを削除
+        $base64Data = preg_replace('/^data:[a-zA-Z0-9\/\+\-]+;base64,/', '', $base64File);
+
+        $binaryFile = base64_decode($base64Data);
         if ( $binaryFile === false ) {
             throw new \Exception('無効なファイルです。');
         }
