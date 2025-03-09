@@ -11,6 +11,7 @@ class DocumentResource extends JsonResource
     {
         return [
             'document_id' => $this->document_id,
+            'apply_id' => $this->apply_id,
             'submission_date' => $this->submission_date,
             'memo' => $this->memo,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
