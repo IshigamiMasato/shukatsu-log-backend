@@ -18,7 +18,7 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->date('exam_date');
-            $table->string('content');
+            $table->text('content');
             $table->text('memo')->nullable();
             $table->dateTime('created_at')->useCurrent()->nullable();
             $table->dateTime('updated_at')->useCurrent()->nullable();

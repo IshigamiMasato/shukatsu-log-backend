@@ -21,7 +21,7 @@ return new class extends Migration
                     ->constrained('companies', 'company_id')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->integer('status')->comment('選考ステータス');
+            $table->unsignedTinyInteger('status')->default(0)->comment('選考ステータス');
             $table->string('occupation')->nullable()->comment('職種');
             $table->string('apply_route')->nullable()->comment('応募経路');
             $table->text('memo')->nullable();

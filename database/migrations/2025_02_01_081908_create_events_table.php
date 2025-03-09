@@ -18,7 +18,7 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('title');
-            $table->tinyInteger('type');
+            $table->unsignedTinyInteger('type');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->text('memo')->nullable();
