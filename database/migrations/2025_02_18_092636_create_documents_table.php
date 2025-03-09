@@ -17,7 +17,7 @@ return new class extends Migration
                     ->constrained('applies', 'apply_id')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('submission_date');
+            $table->date('submission_date');
             $table->text('memo')->nullable();
             $table->dateTime('created_at')->useCurrent()->nullable();
             $table->dateTime('updated_at')->useCurrent()->nullable();

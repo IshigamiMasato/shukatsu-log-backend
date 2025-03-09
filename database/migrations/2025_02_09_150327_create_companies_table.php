@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('president')->nullable();
             $table->string('address')->nullable();
             $table->date('establish_date')->nullable();
-            $table->integer('employee_number')->nullable();
+            $table->unsignedInteger('employee_number')->nullable();
             $table->string('listing_class')->nullable();
             $table->text('benefit')->nullable();
             $table->text('memo')->nullable();

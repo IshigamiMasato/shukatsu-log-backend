@@ -18,8 +18,8 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->date('offer_date');
-            $table->integer('salary')->nullable();
-            $table->string('condition')->nullable();
+            $table->unsignedInteger('salary')->nullable();
+            $table->text('condition')->nullable();
             $table->text('memo')->nullable();
             $table->dateTime('created_at')->useCurrent()->nullable();
             $table->dateTime('updated_at')->useCurrent()->nullable();
