@@ -24,7 +24,7 @@ class CompanyService extends Service
         $this->userRepository = $userRepository;
     }
 
-    public function index(int $userId): \Illuminate\Database\Eloquent\Collection|array
+    public function index(int $userId, array $postedParams): \Illuminate\Database\Eloquent\Collection|array
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -33,7 +33,7 @@ class CompanyService extends Service
                 return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
-            $companies = $this->companyRepository->getBy(['user_id' => $userId]);
+            $companies = $this->companyRepository->search($userId, $postedParams);
 
             return $companies;
 

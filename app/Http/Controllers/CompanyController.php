@@ -19,8 +19,9 @@ class CompanyController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $userId = $request->user_id;
+        $postedParams = $request->all();
 
-        $companies = $this->service->index($userId);
+        $companies = $this->service->index($userId, $postedParams);
         if ( isset($companies['error_code']) ) {
             if ( $companies['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
