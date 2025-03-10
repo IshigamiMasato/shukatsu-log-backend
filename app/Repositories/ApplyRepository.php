@@ -31,8 +31,20 @@ class ApplyRepository extends Repository
     {
         return Apply::query()
             ->where('user_id', $userId)
+            ->when( isset($params['company_id']), function (Builder $query) use($params) {
+                $query->where('company_id', $params['company_id']);
+            })
             ->when( isset($params['status']), function (Builder $query) use($params) {
                 $query->whereIn('status', $params['status']);
+            })
+            ->when( isset($params['occupation']), function (Builder $query) use($params) {
+                $query->where( 'occupation', 'LIKE', '%'.addcslashes($params['occupation'], '%_\\').'%' );
+            })
+            ->when( isset($params['apply_route']), function (Builder $query) use($params) {
+                $query->where( 'apply_route', 'LIKE', '%'.addcslashes($params['apply_route'], '%_\\').'%' );
+            })
+            ->when( isset($params['memo']), function (Builder $query) use($params) {
+                $query->where( 'memo', 'LIKE', '%'.addcslashes($params['memo'], '%_\\').'%' );
             })
             ->orderBy('updated_at', 'DESC')
             ->get();
