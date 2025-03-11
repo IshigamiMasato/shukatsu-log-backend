@@ -54,14 +54,14 @@ class ApplyRepository extends Repository
     {
         return Apply::query()
             ->selectRaw("
-                COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as init_summary,
+                COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as unregistered_selection_process_summary,
                 COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as document_selection_summary,
                 COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as exam_selection_summary,
                 COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as interview_selection_summary,
                 COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as offer_summary,
                 COALESCE( SUM(CASE WHEN status = ? THEN 1 ELSE 0 END), 0 ) as final_summary
             ", [
-                config('const.applies.status.init'),
+                config('const.applies.status.unregistered_selection_process'),
                 config('const.applies.status.document_selection'),
                 config('const.applies.status.exam_selection'),
                 config('const.applies.status.interview_selection'),

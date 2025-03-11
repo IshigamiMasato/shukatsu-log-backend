@@ -14,7 +14,7 @@ return [
 
     'applies' => [
         'status' => [
-            'init' => 0, // 初期値
+            'unregistered_selection_process' => 0, // 選考履歴未登録
             'document_selection' => 1, // 書類選考中
             'exam_selection' => 2, // 筆記試験選考中
             'interview_selection' => 3, // 面接選考中
