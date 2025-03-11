@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CompanyCollection;
 use App\Http\Resources\CompanyResource;
 use App\Services\CompanyService;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class CompanyController extends Controller
             return $this->responseInternalServerError();
         }
 
-        return $this->responseSuccess( CompanyResource::collection($companies) );
+        return $this->responseSuccess( new CompanyCollection($companies) );
     }
 
     public function show(Request $request, int $companyId): \Illuminate\Http\JsonResponse
