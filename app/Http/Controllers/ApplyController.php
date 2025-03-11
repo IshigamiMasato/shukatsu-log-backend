@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ApplyCollection;
 use App\Http\Resources\ApplyResource;
 use App\Services\ApplyService;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class ApplyController extends Controller
             return $this->responseInternalServerError();
         }
 
-        return $this->responseSuccess( ApplyResource::collection($applies) );
+        return $this->responseSuccess( new ApplyCollection($applies) );
     }
 
     public function show(Request $request, int $applyId): \Illuminate\Http\JsonResponse
