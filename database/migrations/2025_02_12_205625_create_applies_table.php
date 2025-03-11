@@ -22,7 +22,7 @@ return new class extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->unsignedTinyInteger('status')->default(0)->comment('選考ステータス');
-            $table->string('occupation')->nullable()->comment('職種');
+            $table->string('occupation')->comment('職種');
             $table->string('apply_route')->nullable()->comment('応募経路');
             $table->text('memo')->nullable();
             $table->dateTime('created_at')->useCurrent()->nullable();

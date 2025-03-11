@@ -59,7 +59,6 @@ class ApplyController extends Controller
 
         $postedParams = $request->only([
             'company_id',
-            'status',
             'occupation',
             'apply_route',
             'memo'
