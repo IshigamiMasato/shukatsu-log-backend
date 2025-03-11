@@ -82,13 +82,10 @@ class ApplyService extends Service
     {
         $validator = Validator::make($postedParams, [
             'company_id'  => ['required', 'int', 'exists:companies,company_id'],
-            'status'      => ['required', 'int', Rule::in( config('const.applies.status') )],
-            'occupation'  => ['nullable', 'string'],
+            'occupation'  => ['required', 'string'],
             'apply_route' => ['nullable', 'string'],
             'memo'        => ['nullable', 'string'],
         ]);
-
-        $validator->setAttributeNames(['status' => '選考ステータス']);
 
         if ( $validator->fails() ) {
             return $this->errorBadRequest( $validator->errors()->getMessages() );
