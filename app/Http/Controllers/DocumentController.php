@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DocumentResource;
+use App\Http\Resources\FileResource;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
@@ -128,11 +127,11 @@ class DocumentController extends Controller
         return $this->responseSuccess( new DocumentResource($document) );
     }
 
-    public function download(Request $reqeust, int $applyId, int $documentId, int $fileId): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
+    public function downloadFile(Request $reqeust, int $applyId, int $documentId, int $fileId): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
     {
         $userId = $reqeust->user_id;
 
-        $result = $this->service->download($userId, $applyId, $documentId, $fileId);
+        $result = $this->service->downloadFile($userId, $applyId, $documentId, $fileId);
         if ( is_array($result) && isset($result['error_code']) ) {
             if ( $result['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
@@ -154,5 +153,33 @@ class DocumentController extends Controller
         }
 
         return $result;
+    }
+
+    public function deleteFile(Request $reqeust, int $applyId, int $documentId, int $fileId): \Illuminate\Http\JsonResponse
+    {
+        $userId = $reqeust->user_id;
+
+        $file = $this->service->deleteFile($userId, $applyId, $documentId, $fileId);
+        if ( isset($file['error_code']) ) {
+            if ( $file['error_code'] == config('api.response.code.user_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.user_not_found') );
+            }
+
+            if ( $file['error_code'] == config('api.response.code.apply_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
+            }
+
+            if ( $file['error_code'] == config('api.response.code.document_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.document_not_found') );
+            }
+
+            if ( $file['error_code'] == config('api.response.code.file_not_found') ) {
+                return $this->responseNotFound( code: config('api.response.code.file_not_found') );
+            }
+
+            return $this->responseInternalServerError();
+        }
+
+        return $this->responseSuccess( new FileResource($file) );
     }
 }

@@ -63,7 +63,9 @@ $router->group(['middleware' => ['cors']], function () use ($router) {
                     $router->delete('/{documentId}', ['uses' => 'DocumentController@delete']);
 
                     // ファイルダウンロード
-                    $router->get('/{documentId}/file/{fileId}', ['uses' => 'DocumentController@download']);
+                    $router->get('/{documentId}/file/{fileId}', ['uses' => 'DocumentController@downloadFile']);
+                    // ファイル削除
+                    $router->delete('/{documentId}/file/{fileId}', ['uses' => 'DocumentController@deleteFile']);
                 });
 
                 $router->group(['prefix' => '/exam'], function () use ($router) {
