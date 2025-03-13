@@ -253,13 +253,32 @@ class ApplyService extends Service
             return $offer->setAttribute( 'type', config('const.applies.status.final') );
         });
 
+        // 応募書類、試験情報、面接情報、内定情報を各日付カラムの降順で並び替え
         $process = $documents
                     ->concat($exams)
                     ->concat($interviews)
-                    ->concat($offers)
-                    ->concat($finalResults);
+                    ->concat($offers);
 
-        $sorted = $process->sortBy('created_at');
+        $sorted = $process->sortByDesc(function ($item) {
+            if ($item instanceof \App\Models\Document) {
+                return $item->submission_date;
+            }
+
+            if ($item instanceof \App\Models\Exam) {
+                return $item->exam_date;
+            }
+
+            if ($item instanceof \App\Models\Interview) {
+                return $item->interview_date;
+            }
+
+            if ($item instanceof \App\Models\Offer) {
+                return $item->offer_date;
+            }
+        });
+
+        // 選考終了情報は一番先頭に追加
+        $sorted = $finalResults->concat($sorted);
 
         // 添字の振り直し
         $values = $sorted->values();
