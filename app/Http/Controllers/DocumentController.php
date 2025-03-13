@@ -76,7 +76,7 @@ class DocumentController extends Controller
     {
         $userId = $request->user_id;
 
-        $postedParams = $request->only(['submission_date', 'memo']);
+        $postedParams = $request->only(['submission_date', 'files', 'memo']);
 
         $result = $this->service->validateUpdate($postedParams);
         if ( isset($result['error_code']) ) {

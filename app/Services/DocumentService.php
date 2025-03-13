@@ -189,6 +189,7 @@ class DocumentService extends Service
     {
         $validator = Validator::make($postedParams, [
             'submission_date' => ['required', 'date'],
+            'files'           => ['nullable', 'array'],
             'memo'            => ['nullable', 'string'],
         ]);
 
@@ -220,15 +221,34 @@ class DocumentService extends Service
                 return $this->errorNotFound( config('api.response.code.document_not_found') );
             }
 
-            $isSuccess = $this->documentRepository->update($document, $postedParams);
+            DB::beginTransaction();
 
+            $isSuccess = $this->documentRepository->update($document, $postedParams);
             if ( ! $isSuccess ) {
-                throw new Exception( __METHOD__ . ": Failed update document. (document_id={$documentId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")");
+                throw new Exception( "Failed update document. (document_id={$documentId}, user_id={$userId}, posted_params=" . json_encode($postedParams, JSON_UNESCAPED_UNICODE) . ")" );
             }
+
+            // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
+            foreach ( $postedParams['files'] as $file ) {
+                $fileName = $this->getFileName($file);
+                $filePath = $this->getFilePath($userId, $fileName);
+                $this->uploadFile($filePath, $file);
+
+                $fileParams = [
+                    'document_id' => $document->document_id,
+                    'name'        => $fileName,
+                    'path'        => $filePath,
+                ];
+                $this->fileRepository->create($fileParams);
+            }
+
+            DB::commit();
 
             return $document;
 
         } catch ( Exception $e ) {
+            DB::rollBack();
+
             Log::error(__METHOD__);
             Log::error($e);
 
