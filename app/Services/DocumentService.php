@@ -356,14 +356,25 @@ class DocumentService extends Service
                 return $this->errorNotFound( config('api.response.code.file_not_found') );
             }
 
+            DB::beginTransaction();
+
+            $isSuccess = $this->fileRepository->delete($file);
+            if ( ! $isSuccess ) {
+                throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}), file_id={$fileId}" );
+            }
+
             $result = Storage::disk('s3')->delete($file->path);
             if ( $result === false ) {
-                throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId} file_path={$file->path})" );
+                throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
             }
+
+            DB::commit();
 
             return $file;
 
         } catch ( Exception $e ) {
+            DB::rollBack();
+
             Log::error(__METHOD__);
             Log::error($e);
 
