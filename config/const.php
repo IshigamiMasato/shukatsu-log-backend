@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'default_limit'  => 10,
+    'default_offset' => 0,
+
     'events' => [
         'type' => [
             'company_information_session' => 1, // 説明会

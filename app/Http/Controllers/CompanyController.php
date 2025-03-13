@@ -22,16 +22,16 @@ class CompanyController extends Controller
         $userId = $request->user_id;
         $postedParams = $request->all();
 
-        $companies = $this->service->index($userId, $postedParams);
-        if ( isset($companies['error_code']) ) {
-            if ( $companies['error_code'] == config('api.response.code.user_not_found') ) {
+        $result = $this->service->index($userId, $postedParams);
+        if ( isset($result['error_code']) ) {
+            if ( $result['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
             }
 
             return $this->responseInternalServerError();
         }
 
-        return $this->responseSuccess( new CompanyCollection($companies) );
+        return $this->responseSuccess( new CompanyCollection($result['companies'], $result['total']) );
     }
 
     public function show(Request $request, int $companyId): \Illuminate\Http\JsonResponse

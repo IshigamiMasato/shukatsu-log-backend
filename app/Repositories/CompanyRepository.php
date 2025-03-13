@@ -13,9 +13,9 @@ class CompanyRepository extends Repository
         parent::__construct( Company::class );
     }
 
-    public function search(int $userId, array $params): Collection
+    public function search(int $userId, array $params): array
     {
-        return Company::query()
+        $query = Company::query()
             ->where('user_id', $userId)
             ->when( isset($params['name']), function (Builder $query) use($params) {
                 $query->where( 'name', 'LIKE', '%'.addcslashes($params['name'], '%_\\').'%' );
@@ -46,8 +46,18 @@ class CompanyRepository extends Repository
             })
             ->when( isset($params['memo']), function (Builder $query) use($params) {
                 $query->where( 'memo', 'LIKE', '%'.addcslashes($params['memo'], '%_\\').'%' );
-            })
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+            });
+
+            $totalCount = $query->count();
+
+            $companies = $query->orderBy('updated_at', 'DESC')
+                                ->offset( isset($params['offset']) ? $params['offset'] : config('const.default_offset') )
+                                ->limit( isset($params['limit'])  ? $params['limit'] : config('const.default_limit') )
+                                ->get();
+
+            return [
+                'total' => $totalCount,
+                'companies' => $companies,
+            ];
     }
 }
