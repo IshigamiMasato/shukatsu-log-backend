@@ -32,7 +32,7 @@ class ApplyService extends Service
         $this->userRepository = $userRepository;
     }
 
-    public function index(int $userId, array $postedParams): \Illuminate\Database\Eloquent\Collection|array
+    public function index(int $userId, array $postedParams): array
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -41,9 +41,9 @@ class ApplyService extends Service
                 return $this->errorNotFound( config('api.response.code.user_not_found') );
             }
 
-            $applies = $this->applyRepository->search($userId, $postedParams);
+            $result = $this->applyRepository->search($userId, $postedParams);
 
-            return $applies;
+            return $result;
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);

@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Company;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
 class CompanyRepository extends Repository
 {
@@ -50,9 +49,14 @@ class CompanyRepository extends Repository
 
             $totalCount = $query->count();
 
+            // offset、limitがなければ全件取得
             $companies = $query->orderBy('updated_at', 'DESC')
-                                ->offset( isset($params['offset']) ? $params['offset'] : config('const.default_offset') )
-                                ->limit( isset($params['limit'])  ? $params['limit'] : config('const.default_limit') )
+                                ->when( isset($params['offset']), function (Builder $query) use($params) {
+                                    $query->offset( $params['offset'] );
+                                })
+                                ->when( isset($params['limit']), function (Builder $query) use($params) {
+                                    $query->limit( $params['limit'] );
+                                })
                                 ->get();
 
             return [

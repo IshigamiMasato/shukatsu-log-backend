@@ -7,11 +7,19 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ApplyCollection extends ResourceCollection
 {
+    private $total;
+
+    public function __construct($resource, $total)
+    {
+        parent::__construct($resource);
+        $this->total = $total;
+    }
+
     public function toArray(Request $request): array
     {
         return [
             'data'  => $this->collection,
-            'total' => $this->collection->count(),
+            'total' => $this->total,
         ];
     }
 }

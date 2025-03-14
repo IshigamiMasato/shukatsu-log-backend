@@ -22,16 +22,16 @@ class ApplyController extends Controller
         $userId = $request->user_id;
         $postedParams = $request->all();
 
-        $applies = $this->service->index($userId, $postedParams);
-        if ( isset($applies['error_code']) ) {
-            if ( $applies['error_code'] == config('api.response.code.user_not_found') ) {
+        $result = $this->service->index($userId, $postedParams);
+        if ( isset($result['error_code']) ) {
+            if ( $result['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
             }
 
             return $this->responseInternalServerError();
         }
 
-        return $this->responseSuccess( new ApplyCollection($applies) );
+        return $this->responseSuccess( new ApplyCollection($result['applies'], $result['total']) );
     }
 
     public function show(Request $request, int $applyId): \Illuminate\Http\JsonResponse

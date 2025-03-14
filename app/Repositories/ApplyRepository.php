@@ -27,9 +27,9 @@ class ApplyRepository extends Repository
                     ->first();
     }
 
-    public function search(int $userId, array $params): Collection
+    public function search(int $userId, array $params): array
     {
-        return Apply::query()
+        $query = Apply::query()
             ->where('user_id', $userId)
             ->when( isset($params['company_id']), function (Builder $query) use($params) {
                 $query->where('company_id', $params['company_id']);
@@ -45,9 +45,24 @@ class ApplyRepository extends Repository
             })
             ->when( isset($params['memo']), function (Builder $query) use($params) {
                 $query->where( 'memo', 'LIKE', '%'.addcslashes($params['memo'], '%_\\').'%' );
-            })
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+            });
+
+        $totalCount = $query->count();
+
+        // offset、limitがなければ全件取得
+        $applies = $query->orderBy('updated_at', 'DESC')
+                        ->when( isset($params['offset']), function (Builder $query) use($params) {
+                            $query->offset( $params['offset'] );
+                        })
+                        ->when( isset($params['limit']), function (Builder $query) use($params) {
+                            $query->limit( $params['limit'] );
+                        })
+                        ->get();
+
+        return [
+            'total' => $totalCount,
+            'applies' => $applies,
+        ];
     }
 
     public function getStatusSummary(int $userId): Apply
