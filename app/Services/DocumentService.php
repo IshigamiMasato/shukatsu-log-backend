@@ -75,6 +75,8 @@ class DocumentService extends Service
         $validator = Validator::make($postedParams, [
             'submission_date' => ['required', 'date'],
             'files'           => ['nullable', 'array'],
+            'files.*.name'    => ['required_with:files.*.base64', 'string'],
+            'files.*.base64'  => ['required_with:files.*.name', 'string'],
             'memo'            => ['nullable', 'string'],
         ]);
 
@@ -115,9 +117,9 @@ class DocumentService extends Service
 
             // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
             foreach ( $postedParams['files'] as $file ) {
-                $fileName = $this->getFileName($file);
-                $filePath = $this->getFilePath($userId, $fileName);
-                $this->uploadFile($filePath, $file);
+                $fileName = $file['name'];
+                $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
+                $this->uploadFile($filePath, $file['base64']);
 
                 $fileParams = [
                     'document_id' => $document->document_id,
@@ -139,27 +141,6 @@ class DocumentService extends Service
         }
 
         return $document;
-    }
-
-    private function getExtensionFromBase64(string $base64String): string|null
-    {
-        if ( preg_match('/^data:(\w+\/([\w+]+));base64,/', $base64String, $matches) ) {
-            return $matches[2]; // MIMEタイプのサブタイプ（拡張子）
-        }
-
-        return null;
-    }
-
-    private function getFileName(string $base64File): string
-    {
-        $extension = $this->getExtensionFromBase64($base64File);
-        if ( $extension === null ) {
-            throw new \Exception('無効なファイルです。');
-        }
-
-        $fileName =  date('YmdHis') . '_' . Str::random() . '.' . $extension;
-
-        return $fileName;
     }
 
     private function getFilePath(int $userId, string $fileName): string
@@ -190,6 +171,8 @@ class DocumentService extends Service
         $validator = Validator::make($postedParams, [
             'submission_date' => ['required', 'date'],
             'files'           => ['nullable', 'array'],
+            'files.*.name'    => ['required_with:files.*.base64', 'string'],
+            'files.*.base64'  => ['required_with:files.*.name', 'string'],
             'memo'            => ['nullable', 'string'],
         ]);
 
@@ -230,9 +213,9 @@ class DocumentService extends Service
 
             // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
             foreach ( $postedParams['files'] as $file ) {
-                $fileName = $this->getFileName($file);
-                $filePath = $this->getFilePath($userId, $fileName);
-                $this->uploadFile($filePath, $file);
+                $fileName = $file['name'];
+                $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
+                $this->uploadFile($filePath, $file['base64']);
 
                 $fileParams = [
                     'document_id' => $document->document_id,
@@ -334,7 +317,7 @@ class DocumentService extends Service
                 return $this->errorNotFound( config('api.response.code.file_not_found') );
             }
 
-            return Storage::disk('s3')->download($file->path);
+            return Storage::disk('s3')->download($file->path, $file->name);
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
