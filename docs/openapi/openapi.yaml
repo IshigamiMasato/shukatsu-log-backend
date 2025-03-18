@@ -12,6 +12,9 @@ paths:
   /api/user:
     $ref: ./user/user.yaml
 
+  /api/event:
+    $ref: ./event/event.yaml
+
 components:
   securitySchemes:
     BearerAuth:
