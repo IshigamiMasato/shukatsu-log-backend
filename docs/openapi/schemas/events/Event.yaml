@@ -1,0 +1,55 @@
+type: object
+additionalProperties: false
+properties:
+  event_id:
+    type: integer
+    description: 予定ID
+  user_id:
+    type: integer
+    description: ユーザID
+  title:
+    type: string
+    description: タイトル
+  type:
+    type: integer
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+    description: |
+      タイプ:
+      - `1`: 説明会
+      - `2`: リクルータ面談
+      - `3`: 書類提出
+      - `4`: 適性検査
+      - `5`: 面接
+      - `6`: 内定関連
+  start_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "開始（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  end_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "終了（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  memo:
+    type: string
+    description: メモ
+  created_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  updated_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+required:
+  - event_id
+  - user_id
+  - title
+  - type
+  - start_at
+  - end_at

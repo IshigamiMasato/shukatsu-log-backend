@@ -1,0 +1,205 @@
+put:
+  summary: 予定更新
+  tags:
+    - event
+  parameters:
+    - name: event_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            title:
+              type: string
+              description: タイトル
+            type:
+              type: integer
+              enum:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+              description: |
+                タイプ:
+                - `1`: 説明会
+                - `2`: リクルータ面談
+                - `3`: 書類提出
+                - `4`: 適性検査
+                - `5`: 面接
+                - `6`: 内定関連
+            start_at:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+              description: "開始（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+            end_at:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+              description: "終了（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+            memo:
+              type: string
+              description: メモ
+          required:
+            - title
+            - type
+            - start_at
+            - end_at
+        example:
+          {
+            "title": "株式会社A 一次面接",
+            "type": 5,
+            "start_at": "2025-02-01 12:00:00",
+            "end_at": "2025-02-01 13:00:00",
+            "memo": "集合場所：〜、持ち物：〜",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Event"
+          example:
+            {
+              "event_id": 1,
+              "user_id": 1,
+              "title": "株式会社A 一次面接",
+              "type": 5,
+              "start_at": "2025-02-01 12:00:00",
+              "end_at": "2025-02-01 13:00:00",
+              "memo": "集合場所：〜、持ち物：〜",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "title": ["タイトルは、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - EVENT_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `EVENT_NOT_FOUND`: 予定情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+delete:
+  summary: 予定削除
+  tags:
+    - event
+  parameters:
+    - name: event_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    "200":
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Event"
+            example:
+              {
+                "event_id": 1,
+                "user_id": 1,
+                "title": "株式会社A 一次面接",
+                "type": 5,
+                "start_at": "2025-02-01 12:00:00",
+                "end_at": "2025-02-01 13:00:00",
+                "memo": "集合場所：〜、持ち物：〜",
+                "created_at": "2025-01-01 12:34:56",
+                "updated_at": "2025-01-01 12:34:56",
+              }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - EVENT_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `EVENT_NOT_FOUND`: 予定情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
