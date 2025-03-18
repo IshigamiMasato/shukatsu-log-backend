@@ -7,7 +7,7 @@ put:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
   requestBody:
     required: true
     content:
@@ -142,7 +142,7 @@ delete:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
   responses:
     "200":
         content:
