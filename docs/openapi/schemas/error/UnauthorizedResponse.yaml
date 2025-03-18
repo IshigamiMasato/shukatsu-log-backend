@@ -1,0 +1,14 @@
+type: object
+additionalProperties: false
+properties:
+  code:
+    type: string
+    enum:
+      - UNAUTHORIZED
+      - EXPIRED_TOKEN
+    description: |
+      エラーコード:
+      - `UNAUTHORIZED`: 認証情報が無効
+      - `EXPIRED_TOKEN`: トークンの有効期限が切れている
+required:
+  - code

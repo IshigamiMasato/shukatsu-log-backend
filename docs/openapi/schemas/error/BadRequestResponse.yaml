@@ -1,0 +1,20 @@
+type: object
+additionalProperties: false
+properties:
+  code:
+    type: string
+    enum:
+      - BAD_REQUEST
+    description: |
+      エラーコード:
+      - `BAD_REQUEST`: パラメータが不正
+  errors:
+    type: object
+    additionalProperties:
+      type: array
+      items:
+        type: string
+      description: リクエストのパラメータごとのエラーメッセージ
+required:
+  - code
+  - errors

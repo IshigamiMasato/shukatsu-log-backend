@@ -1,0 +1,12 @@
+type: object
+additionalProperties: false
+properties:
+  code:
+    type: string
+    enum:
+      - INTERNAL_SERVER_ERROR
+    description: |
+      エラーコード:
+      - `INTERNAL_SERVER_ERROR`: 予期せぬエラー
+required:
+  - code

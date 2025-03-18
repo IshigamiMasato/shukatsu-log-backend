@@ -7,31 +7,7 @@ get:
       content:
         application/json:
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              user_id:
-                type: integer
-                description: ユーザID
-              name:
-                type: string
-                description: ユーザ名
-              email:
-                type: string
-                format: email
-                description: メールアドレス
-              created_at:
-                type: string
-                pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
-                description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
-              updated_at:
-                type: string
-                pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
-                description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
-            required:
-              - user_id
-              - name
-              - email
+            $ref: "#components/schemas/User"
           example:
             {
               "user_id": 1,
@@ -44,20 +20,7 @@ get:
       content:
         application/json:
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              code:
-                type: string
-                enum:
-                  - UNAUTHORIZED
-                  - EXPIRED_TOKEN
-                description: |
-                  エラーコード:
-                  - `UNAUTHORIZED`: 認証情報が無効
-                  - `EXPIRED_TOKEN`: トークンの有効期限が切れている
-            required:
-              - code
+            $ref: "#components/schemas/UnauthorizedResponse"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -86,18 +49,7 @@ get:
       content:
         application/json:
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              code:
-                type: string
-                enum:
-                  - INTERNAL_SERVER_ERROR
-                description: |
-                  エラーコード:
-                  - `INTERNAL_SERVER_ERROR`: 予期せぬエラー
-            required:
-              - code
+            $ref: "#components/schemas/InternalServerErrorResponse"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"

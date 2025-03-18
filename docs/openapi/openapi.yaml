@@ -16,6 +16,19 @@ paths:
     $ref: ./event/event.yaml
 
 components:
+  schemas:
+    User:
+      $ref: ./schemas/users/User.yaml
+    Event:
+      $ref: ./schemas/events/Event.yaml
+
+    BadRequestResponse:
+      $ref: ./schemas/error/BadRequestResponse.yaml
+    UnauthorizedResponse:
+      $ref: ./schemas/error/UnauthorizedResponse.yaml
+    InternalServerErrorResponse:
+      $ref: ./schemas/error/InternalServerErrorResponse.yaml
+
   securitySchemes:
     BearerAuth:
       $ref: ./security-schemes/BearerAuth.yaml
