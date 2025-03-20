@@ -26,6 +26,8 @@ paths:
     $ref: ./apply/apply.status-summary.yaml
   /api/apply:
     $ref: ./apply/apply.yaml
+  /api/apply/{apply_id}:
+    $ref: ./apply/apply.apply_id.yaml
 
 components:
   schemas:
