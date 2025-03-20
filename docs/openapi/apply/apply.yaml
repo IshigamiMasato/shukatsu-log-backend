@@ -1,0 +1,268 @@
+get:
+  summary: 応募一覧取得
+  tags:
+    - apply
+  parameters:
+    - name: company_id
+      in: query
+      description: 企業ID
+      schema:
+        type: integer
+    - name: status[]
+      in: query
+      description: |
+        ステータスの配列
+        - `0`: 選考履歴未登録
+        - `1`: 書類選考中
+        - `2`: 筆記試験選考中
+        - `3`: 面接選考中
+        - `4`: 内定
+        - `5`: 選考終了
+      schema:
+        type: array
+        items:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+    - name: occupation
+      in: query
+      description: 職種
+      schema:
+        type: string
+    - name: apply_route
+      in: query
+      description: 応募経路
+      schema:
+        type: string
+    - name: memo
+      in: query
+      description: メモ
+      schema:
+        type: string
+    - name: offset
+      in: query
+      description: 取得レコードのオフセット
+      schema:
+        type: integer
+    - name: limit
+      in: query
+      description: 取得レコードの件数
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              total:
+                type: integer
+                description: 検索条件を踏まえた合計レコード数
+              data:
+                type: array
+                items:
+                  $ref: "#components/schemas/Apply"
+            required:
+              - total
+              - data
+          example:
+            {
+              "total": 1,
+              "data": [
+                {
+                  "apply_id": 1,
+                  "user_id": 1,
+                  "company_id": 1,
+                  "status": 2,
+                  "occupation": "エンジニア",
+                  "apply_route": "Wantedly",
+                  "memo": "メモメモメモ",
+                  "created_at": "2025-01-01 12:34:56",
+                  "updated_at": "2025-01-01 12:34:56",
+                  "company": {
+                    "company_id": 1,
+                    "user_id": 1,
+                    "name": "株式会社A",
+                    "url": "https://company.com",
+                    "president": "佐藤 太郎",
+                    "address": "東京都新宿区Aビル",
+                    "establish_date": "2000-01-01",
+                    "employee_number": 100,
+                    "listing_class": "スタンダード市場",
+                    "benefit": "福利厚生〜",
+                    "memo": "メモ〜",
+                    "created_at": "2025-01-01 12:34:56",
+                    "updated_at": "2025-01-01 12:34:56",
+                  }
+                }
+              ]
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+post:
+  summary: 応募登録
+  tags:
+    - apply
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            company_id:
+              type: integer
+              description: 企業ID
+            occupation:
+              type: string
+              description: 職種
+            apply_route:
+              type: string
+              description: 応募経路
+            memo:
+              type: string
+              description: メモ
+          required:
+            - company_id
+            - occupation
+        example:
+          {
+            "company_id": 1,
+            "occupation": "エンジニア",
+            "apply_route": "Wantedly",
+            "memo": "メモメモメモ",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Apply"
+          example:
+            {
+              "apply_id": 1,
+              "user_id": 1,
+              "company_id": 1,
+              "status": 0,
+              "occupation": "エンジニア",
+              "apply_route": "Wantedly",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+              "company": {
+                "company_id": 1,
+                "user_id": 1,
+                "name": "株式会社A",
+                "url": "https://company.com",
+                "president": "佐藤 太郎",
+                "address": "東京都新宿区Aビル",
+                "establish_date": "2000-01-01",
+                "employee_number": 100,
+                "listing_class": "スタンダード市場",
+                "benefit": "福利厚生〜",
+                "memo": "メモ〜",
+                "created_at": "2025-01-01 12:34:56",
+                "updated_at": "2025-01-01 12:34:56",
+              }
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "occupation": ["職種は、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - COMPANY_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `COMPANY_NOT_FOUND`: 企業情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []

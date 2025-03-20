@@ -17,12 +17,28 @@ paths:
   /api/event/{event_id}:
     $ref: ./event/event.event_id.yaml
 
+  /api/company:
+    $ref: ./company/company.yaml
+  /api/company/{company_id}:
+    $ref: ./company/company.company_id.yaml
+
+  /api/apply/status-summary:
+    $ref: ./apply/apply.status-summary.yaml
+  /api/apply:
+    $ref: ./apply/apply.yaml
+  /api/apply/{apply_id}:
+    $ref: ./apply/apply.apply_id.yaml
+
 components:
   schemas:
     User:
       $ref: ./schemas/users/User.yaml
     Event:
       $ref: ./schemas/events/Event.yaml
+    Company:
+      $ref: ./schemas/companies/Company.yaml
+    Apply:
+      $ref: ./schemas/applies/Apply.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml

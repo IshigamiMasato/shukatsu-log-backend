@@ -1,0 +1,55 @@
+type: object
+additionalProperties: false
+properties:
+  apply_id:
+    type: integer
+    description: 応募ID
+  user_id:
+    type: integer
+    description: ユーザID
+  company_id:
+    type: integer
+    description: 企業ID
+  status:
+    type: integer
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    description: |
+      ステータス:
+      - `0`: 選考履歴未登録
+      - `1`: 書類選考中
+      - `2`: 筆記試験選考中
+      - `3`: 面接選考中
+      - `4`: 内定
+      - `5`: 選考終了
+  occupation:
+    type: string
+    description: 職種
+  apply_route:
+    type: string
+    description: 応募経路
+  memo:
+    type: string
+    description: メモ
+  created_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  updated_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  company:
+    $ref: "#components/schemas/Company"
+required:
+  - apply_id
+  - user_id
+  - company_id
+  - status
+  - occupation
+  - company
