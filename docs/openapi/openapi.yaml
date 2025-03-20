@@ -19,6 +19,8 @@ paths:
 
   /api/company:
     $ref: ./company/company.yaml
+  /api/company/{company_id}:
+    $ref: ./company/company.company_id.yaml
 
 components:
   schemas:
