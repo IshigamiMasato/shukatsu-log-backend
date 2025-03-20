@@ -24,6 +24,8 @@ paths:
 
   /api/apply/status-summary:
     $ref: ./apply/apply.status-summary.yaml
+  /api/apply:
+    $ref: ./apply/apply.yaml
 
 components:
   schemas:
@@ -33,6 +35,8 @@ components:
       $ref: ./schemas/events/Event.yaml
     Company:
       $ref: ./schemas/companies/Company.yaml
+    Apply:
+      $ref: ./schemas/applies/Apply.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
