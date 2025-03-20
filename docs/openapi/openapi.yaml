@@ -17,12 +17,17 @@ paths:
   /api/event/{event_id}:
     $ref: ./event/event.event_id.yaml
 
+  /api/company:
+    $ref: ./company/company.yaml
+
 components:
   schemas:
     User:
       $ref: ./schemas/users/User.yaml
     Event:
       $ref: ./schemas/events/Event.yaml
+    Company:
+      $ref: ./schemas/companies/Company.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
