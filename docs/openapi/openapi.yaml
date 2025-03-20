@@ -28,6 +28,8 @@ paths:
     $ref: ./apply/apply.yaml
   /api/apply/{apply_id}:
     $ref: ./apply/apply.apply_id.yaml
+  /api/apply/{apply_id}/document:
+    $ref: ./apply/apply.apply_id.document.yaml
 
 components:
   schemas:
@@ -39,6 +41,10 @@ components:
       $ref: ./schemas/companies/Company.yaml
     Apply:
       $ref: ./schemas/applies/Apply.yaml
+    Document:
+      $ref: ./schemas/Document.yaml
+    File:
+      $ref: ./schemas/File.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
