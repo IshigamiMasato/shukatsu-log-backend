@@ -22,6 +22,9 @@ paths:
   /api/company/{company_id}:
     $ref: ./company/company.company_id.yaml
 
+  /api/apply/status-summary:
+    $ref: ./apply/apply.status-summary.yaml
+
 components:
   schemas:
     User:

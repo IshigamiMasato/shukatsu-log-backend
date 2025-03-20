@@ -1,0 +1,86 @@
+get:
+  summary: 応募ステータス集計取得
+  tags:
+    - apply
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              unregistered_selection_process_summary:
+                type: string
+                description: 選考履歴未登録数
+              document_selection_summary:
+                type: string
+                description: 書類選考中数
+              exam_selection_summary:
+                type: string
+                description: 筆記試験選考中数
+              interview_selection_summary:
+                type: string
+                description: 面接選考中数
+              offer_summary:
+                type: string
+                description: 内定数
+              final_summary:
+                type: string
+                description: 選考終了数
+            required:
+              - unregistered_selection_process_summary
+              - document_selection_summary
+              - exam_selection_summary
+              - interview_selection_summary
+              - offer_summary
+              - final_summary
+          example:
+            {
+              "unregistered_selection_process_summary": "1",
+              "document_selection_summary": "1",
+              "exam_selection_summary": "2",
+              "interview_selection_summary": "3",
+              "offer_summary": "1",
+              "final_summary": "2",
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
