@@ -1,0 +1,18 @@
+type: object
+additionalProperties: false
+properties:
+  access_token:
+    type: string
+    description: JWTトークン
+  token_type:
+    type: string
+    enum:
+      - bearer
+    description: トークンタイプ
+  expires_in:
+    type: integer
+    description: トークン有効期限(秒）
+required:
+  - access_token
+  - token_type
+  - expires_in

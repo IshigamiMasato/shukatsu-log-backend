@@ -9,6 +9,9 @@ servers:
     description: ローカル環境
 
 paths:
+  /api/login:
+    $ref: ./auth/login.yaml
+
   /api/user:
     $ref: ./user/user.yaml
 
@@ -55,6 +58,8 @@ paths:
 
 components:
   schemas:
+    AuthInfo:
+      $ref: ./schemas/AuthInfo.yaml
     User:
       $ref: ./schemas/users/User.yaml
     Event:
