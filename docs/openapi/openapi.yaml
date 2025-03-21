@@ -44,6 +44,8 @@ paths:
     $ref: ./apply/apply.apply_id.interview.interview_id.yaml
   /api/apply/{apply_id}/offer:
     $ref: ./apply/apply.apply_id.offer.yaml
+  /api/apply/{apply_id}/offer/{offer_id}:
+    $ref: ./apply/apply.apply_id.offer.offer_id.yaml
 
 components:
   schemas:
