@@ -166,7 +166,7 @@ return [
         'apply_route' => '応募経路',
         'submission_date' => '書類提出日',
         'extension' => '拡張子',
-        'exam_date' => '筆記試験日',
+        'exam_date' => '試験日',
         'interview_date' => '面接日',
         'interviewer_info' => '面接官情報',
         'offer_date' => '内定通知日',
