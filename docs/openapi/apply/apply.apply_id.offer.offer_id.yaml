@@ -1,0 +1,275 @@
+get:
+  summary: 内定詳細取得
+  tags:
+    - apply
+    - offer
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: offer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Offer"
+          example:
+            {
+              "offer_id": 1,
+              "apply_id": 1,
+              "offer_date": "2025-01-01",
+              "salary": 10000000,
+              "condition": "条件条件",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - OFFER_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `OFFER_NOT_FOUND`: 内定情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+put:
+  summary: 内定情報更新
+  tags:
+    - apply
+    - offer
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: offer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            offer_date:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+              description: 内定通知日
+            salary:
+              type: integer
+              description: 年収
+            condition:
+              type: string
+              description: 条件
+            memo:
+              type: string
+              description: メモ
+          required:
+            - offer_date
+        example:
+          {
+            "offer_date": "2025-01-01",
+            "salary": 10000000,
+            "condition": "条件条件",
+            "memo": "メモメモメモ",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Offer"
+          example:
+            {
+              "offer_id": 1,
+              "apply_id": 1,
+              "offer_date": "2025-01-01",
+              "salary": 10000000,
+              "condition": "条件条件",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "offer_date": ["内定通知日は、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - OFFER_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `OFFER_NOT_FOUND`: 内定情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+delete:
+  summary: 内定情報削除
+  tags:
+    - apply
+    - offer
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: offer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Offer"
+          example:
+            {
+              "offer_id": 1,
+              "apply_id": 1,
+              "offer_date": "2025-01-01",
+              "salary": 10000000,
+              "condition": "条件条件",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - OFFER_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `OFFER_NOT_FOUND`: 内定情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []

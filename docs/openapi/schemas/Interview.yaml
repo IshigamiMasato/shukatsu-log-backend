@@ -1,0 +1,31 @@
+type: object
+additionalProperties: false
+properties:
+  interview_id:
+    type: integer
+    description: 面接ID
+  apply_id:
+    type: integer
+    description: 応募ID
+  interview_date:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+    description: 面接日
+  interviewer_info:
+    type: string
+    description: 面接官情報
+  memo:
+    type: string
+    description: メモ
+  created_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  updated_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+required:
+  - interview_id
+  - apply_id
+  - interview_date

@@ -1,0 +1,34 @@
+type: object
+additionalProperties: false
+properties:
+  offer_id:
+    type: integer
+    description: 内定ID
+  apply_id:
+    type: integer
+    description: 応募ID
+  offer_date:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+    description: 内定通知日
+  salary:
+    type: integer
+    description: 年収
+  condition:
+    type: string
+    description: 条件
+  memo:
+    type: string
+    description: メモ
+  created_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  updated_at:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+required:
+  - offer_id
+  - apply_id
+  - offer_date

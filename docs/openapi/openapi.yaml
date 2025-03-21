@@ -38,6 +38,18 @@ paths:
     $ref: ./apply/apply.apply_id.exam.yaml
   /api/apply/{apply_id}/exam/{exam_id}:
     $ref: ./apply/apply.apply_id.exam.exam_id.yaml
+  /api/apply/{apply_id}/interview:
+    $ref: ./apply/apply.apply_id.interview.yaml
+  /api/apply/{apply_id}/interview/{interview_id}:
+    $ref: ./apply/apply.apply_id.interview.interview_id.yaml
+  /api/apply/{apply_id}/offer:
+    $ref: ./apply/apply.apply_id.offer.yaml
+  /api/apply/{apply_id}/offer/{offer_id}:
+    $ref: ./apply/apply.apply_id.offer.offer_id.yaml
+  /api/apply/{apply_id}/final_result:
+    $ref: ./apply/apply.apply_id.final_result.yaml
+  /api/apply/{apply_id}/final_result/{final_result_id}:
+    $ref: ./apply/apply.apply_id.final_result.final_result_id.yaml
 
 components:
   schemas:
@@ -55,6 +67,12 @@ components:
       $ref: ./schemas/File.yaml
     Exam:
       $ref: ./schemas/Exam.yaml
+    Interview:
+      $ref: ./schemas/Interview.yaml
+    Offer:
+      $ref: ./schemas/Offer.yaml
+    FinalResult:
+      $ref: ./schemas/FinalResult.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
