@@ -30,6 +30,8 @@ paths:
     $ref: ./apply/apply.apply_id.yaml
   /api/apply/{apply_id}/document:
     $ref: ./apply/apply.apply_id.document.yaml
+  /api/apply/{apply_id}/document/{document_id}:
+    $ref: ./apply/apply.apply_id.document.document_id.yaml
 
 components:
   schemas:

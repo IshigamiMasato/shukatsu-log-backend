@@ -1,0 +1,310 @@
+get:
+  summary: 応募書類詳細取得
+  tags:
+    - apply
+    - document
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Document"
+          example:
+            {
+              "document_id": 1,
+              "apply_id": 1,
+              "submission_date": "2025-01-01",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+              files: [
+                {
+                  "file_id": 1,
+                  "document_id": 1,
+                  "name": "履歴書",
+                  "path": "/documents/履歴書.png",
+                  "created_at": "2025-01-01 12:34:56",
+                  "updated_at": "2025-01-01 12:34:56",
+                }
+              ]
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - DOCUMENT_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `DOCUMENT_NOT_FOUND`: 応募書類情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+put:
+  summary: 応募書類更新
+  tags:
+    - apply
+    - document
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            submission_date:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+              description: 書類提出日
+            files:
+              type: array
+              description: filesが存在する場合、nameとbase64はセットで指定する必要有。
+              items:
+                type: object
+                additionalProperties: false
+                properties:
+                  name:
+                    type: string
+                    description: ファイル名
+                  base64:
+                    type: string
+                    description: base64エンコード後のファイル
+            memo:
+              type: string
+              description: メモ
+          required:
+            - submission_date
+        example:
+          {
+            "submission_date": "2025-01-01",
+            "files": [
+              {
+                "name": "履歴書",
+                "base64": "〜",
+              }
+            ],
+            "memo": "メモメモメモ",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Document"
+          example:
+            {
+              "document_id": 1,
+              "apply_id": 1,
+              "submission_date": "2025-01-01",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+              files: [
+                {
+                  "file_id": 1,
+                  "document_id": 1,
+                  "name": "履歴書",
+                  "path": "/documents/履歴書.png",
+                  "created_at": "2025-01-01 12:34:56",
+                  "updated_at": "2025-01-01 12:34:56",
+                }
+              ]
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "submission_date": ["書類提出日は、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - DOCUMENT_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `DOCUMENT_NOT_FOUND`: 応募書類情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
+
+delete:
+  summary: 応募書類削除
+  tags:
+    - apply
+    - document
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Document"
+          example:
+            {
+              "document_id": 1,
+              "apply_id": 1,
+              "submission_date": "2025-01-01",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+              files: [
+                {
+                  "file_id": 1,
+                  "document_id": 1,
+                  "name": "履歴書",
+                  "path": "/documents/履歴書.png",
+                  "created_at": "2025-01-01 12:34:56",
+                  "updated_at": "2025-01-01 12:34:56",
+                }
+              ]
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                  - DOCUMENT_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+                  - `DOCUMENT_NOT_FOUND`: 応募書類情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
