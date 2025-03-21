@@ -1,7 +1,6 @@
 get:
   summary: 面接詳細取得
   tags:
-    - apply
     - interview
   parameters:
     - name: apply_id
@@ -78,7 +77,6 @@ get:
 put:
   summary: 面接情報更新
   tags:
-    - apply
     - interview
   parameters:
     - name: apply_id
@@ -193,7 +191,6 @@ put:
 delete:
   summary: 面接情報削除
   tags:
-    - apply
     - interview
   parameters:
     - name: apply_id

@@ -1,7 +1,6 @@
 get:
   summary: 内定詳細取得
   tags:
-    - apply
     - offer
   parameters:
     - name: apply_id
@@ -79,7 +78,6 @@ get:
 put:
   summary: 内定情報更新
   tags:
-    - apply
     - offer
   parameters:
     - name: apply_id
@@ -199,7 +197,6 @@ put:
 delete:
   summary: 内定情報削除
   tags:
-    - apply
     - offer
   parameters:
     - name: apply_id

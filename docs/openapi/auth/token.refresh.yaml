@@ -1,0 +1,54 @@
+post:
+  summary: トークンリフレッシュ
+  tags:
+    - auth
+  parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "`Authorization: Bearer アクセストークン` で指定して下さい。"
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/AuthInfo"
+          example:
+            {
+              "access_token": "アクセストークンの文字列",
+              "token_type": "bearer",
+              "expires_in": 3600,
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - UNAUTHORIZED
+                  - INVALID_REFRESH_TOKEN
+                description: |
+                  エラーコード:
+                  - `UNAUTHORIZED`: 認証情報が無効
+                  - `INVALID_REFRESH_TOKEN`: リフレッシュトークンが無効
+            required:
+              - code
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }

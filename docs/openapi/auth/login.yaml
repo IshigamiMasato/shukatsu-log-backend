@@ -1,0 +1,80 @@
+post:
+  summary: ログイン
+  tags:
+    - auth
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            email:
+              type: string
+              format: email
+              description: メールアドレス
+            password:
+              type: string
+              description: パスワード
+          required:
+            - email
+            - password
+        example:
+          {
+            "email": "email@sample.jp",
+            "password": "samplepassword",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/AuthInfo"
+          example:
+            {
+              "access_token": "アクセストークンの文字列",
+              "token_type": "bearer",
+              "expires_in": 3600,
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "email": ["メールアドレスは、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - UNAUTHORIZED
+                description: |
+                  エラーコード:
+                  - `UNAUTHORIZED`: 認証情報が無効
+            required:
+              - code
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }

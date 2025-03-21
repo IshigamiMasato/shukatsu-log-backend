@@ -1,7 +1,6 @@
 post:
   summary: 試験情報登録
   tags:
-    - apply
     - exam
   parameters:
     - name: apply_id

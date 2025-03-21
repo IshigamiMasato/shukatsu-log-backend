@@ -1,7 +1,6 @@
 post:
   summary: 選考終了情報登録
   tags:
-    - apply
     - final result
   parameters:
     - name: apply_id

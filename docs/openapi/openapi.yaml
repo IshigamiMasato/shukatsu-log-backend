@@ -9,6 +9,13 @@ servers:
     description: ローカル環境
 
 paths:
+  /api/login:
+    $ref: ./auth/login.yaml
+  /api/token/refresh:
+    $ref: ./auth/token.refresh.yaml
+  /api/logout:
+    $ref: ./auth/logout.yaml
+
   /api/user:
     $ref: ./user/user.yaml
 
@@ -50,9 +57,13 @@ paths:
     $ref: ./apply/apply.apply_id.final_result.yaml
   /api/apply/{apply_id}/final_result/{final_result_id}:
     $ref: ./apply/apply.apply_id.final_result.final_result_id.yaml
+  /api/apply/{apply_id}/process:
+    $ref: ./apply/apply.apply_id.process.yaml
 
 components:
   schemas:
+    AuthInfo:
+      $ref: ./schemas/auth/AuthInfo.yaml
     User:
       $ref: ./schemas/users/User.yaml
     Event:
@@ -62,17 +73,17 @@ components:
     Apply:
       $ref: ./schemas/applies/Apply.yaml
     Document:
-      $ref: ./schemas/Document.yaml
+      $ref: ./schemas/applies/process/Document.yaml
     File:
-      $ref: ./schemas/File.yaml
+      $ref: ./schemas/applies/process/File.yaml
     Exam:
-      $ref: ./schemas/Exam.yaml
+      $ref: ./schemas/applies/process/Exam.yaml
     Interview:
-      $ref: ./schemas/Interview.yaml
+      $ref: ./schemas/applies/process/Interview.yaml
     Offer:
-      $ref: ./schemas/Offer.yaml
+      $ref: ./schemas/applies/process/Offer.yaml
     FinalResult:
-      $ref: ./schemas/FinalResult.yaml
+      $ref: ./schemas/applies/process/FinalResult.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
