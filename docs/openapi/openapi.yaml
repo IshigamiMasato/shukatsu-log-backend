@@ -50,6 +50,8 @@ paths:
     $ref: ./apply/apply.apply_id.final_result.yaml
   /api/apply/{apply_id}/final_result/{final_result_id}:
     $ref: ./apply/apply.apply_id.final_result.final_result_id.yaml
+  /api/apply/{apply_id}/process:
+    $ref: ./apply/apply.apply_id.process.yaml
 
 components:
   schemas:
