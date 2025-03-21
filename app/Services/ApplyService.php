@@ -129,7 +129,7 @@ class ApplyService extends Service
     {
         $validator = Validator::make($postedParams, [
             'status'      => ['required', 'int', Rule::in( config('const.applies.status') )],
-            'occupation'  => ['nullable', 'string'],
+            'occupation'  => ['required', 'string'],
             'apply_route' => ['nullable', 'string'],
             'memo'        => ['nullable', 'string'],
         ]);
