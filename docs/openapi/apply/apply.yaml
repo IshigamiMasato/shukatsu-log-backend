@@ -3,6 +3,11 @@ get:
   tags:
     - apply
   parameters:
+    - name: keyword
+      in: query
+      description: 検索ワード
+      schema:
+        type: string
     - name: company_id
       in: query
       description: 企業ID
@@ -29,21 +34,6 @@ get:
             - 3
             - 4
             - 5
-    - name: occupation
-      in: query
-      description: 職種
-      schema:
-        type: string
-    - name: apply_route
-      in: query
-      description: 応募経路
-      schema:
-        type: string
-    - name: memo
-      in: query
-      description: メモ
-      schema:
-        type: string
     - name: offset
       in: query
       description: 取得レコードのオフセット

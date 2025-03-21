@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Apply;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
 class ApplyRepository extends Repository
 {
@@ -31,20 +30,18 @@ class ApplyRepository extends Repository
     {
         $query = Apply::query()
             ->where('user_id', $userId)
+            ->when( isset($params['keyword']), function (Builder $query) use($params) {
+                $query->where(function (Builder $query) use ($params) {
+                    $query->where( 'occupation',  'LIKE', '%'.addcslashes($params['keyword'], '%_\\').'%' )
+                        ->orWhere( 'apply_route', 'LIKE', '%'.addcslashes($params['keyword'], '%_\\').'%' )
+                        ->orWhere( 'memo',        'LIKE', '%'.addcslashes($params['keyword'], '%_\\').'%' );
+                });
+            })
             ->when( isset($params['company_id']), function (Builder $query) use($params) {
                 $query->where('company_id', $params['company_id']);
             })
             ->when( isset($params['status']), function (Builder $query) use($params) {
                 $query->whereIn('status', $params['status']);
-            })
-            ->when( isset($params['occupation']), function (Builder $query) use($params) {
-                $query->where( 'occupation', 'LIKE', '%'.addcslashes($params['occupation'], '%_\\').'%' );
-            })
-            ->when( isset($params['apply_route']), function (Builder $query) use($params) {
-                $query->where( 'apply_route', 'LIKE', '%'.addcslashes($params['apply_route'], '%_\\').'%' );
-            })
-            ->when( isset($params['memo']), function (Builder $query) use($params) {
-                $query->where( 'memo', 'LIKE', '%'.addcslashes($params['memo'], '%_\\').'%' );
             });
 
         $totalCount = $query->count();
