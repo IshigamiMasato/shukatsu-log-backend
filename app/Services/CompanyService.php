@@ -73,15 +73,16 @@ class CompanyService extends Service
     public function validateStore(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
-            'name'            => ['required', 'string'],
-            'url'             => ['nullable', 'string', 'url'],
-            'president'       => ['nullable', 'string'],
-            'address'         => ['nullable', 'string'],
-            'establish_date'  => ['nullable', 'date'],
-            'employee_number' => ['nullable', 'int'],
-            'listing_class'   => ['nullable', 'string'],
-            'benefit'         => ['nullable', 'string'],
-            'memo'            => ['nullable', 'string'],
+            'name'                 => ['required', 'string'],
+            'url'                  => ['nullable', 'string', 'url'],
+            'president'            => ['nullable', 'string'],
+            'address'              => ['nullable', 'string'],
+            'establish_date'       => ['nullable', 'date'],
+            'employee_number'      => ['nullable', 'int'],
+            'listing_class'        => ['nullable', 'string'],
+            'business_description' => ['nullable', 'string'],
+            'benefit'              => ['nullable', 'string'],
+            'memo'                 => ['nullable', 'string'],
         ]);
 
         $validator->setAttributeNames(['name' => '企業名']);
@@ -119,15 +120,16 @@ class CompanyService extends Service
     public function validateUpdate(array $postedParams): bool|array
     {
         $validator = Validator::make($postedParams, [
-            'name'            => ['required', 'string'],
-            'url'             => ['nullable', 'string', 'url'],
-            'president'       => ['nullable', 'string'],
-            'address'         => ['nullable', 'string'],
-            'establish_date'  => ['nullable', 'date'],
-            'employee_number' => ['nullable', 'int'],
-            'listing_class'   => ['nullable', 'string'],
-            'benefit'         => ['nullable', 'string'],
-            'memo'            => ['nullable', 'string'],
+            'name'                 => ['required', 'string'],
+            'url'                  => ['nullable', 'string', 'url'],
+            'president'            => ['nullable', 'string'],
+            'address'              => ['nullable', 'string'],
+            'establish_date'       => ['nullable', 'date'],
+            'employee_number'      => ['nullable', 'int'],
+            'listing_class'        => ['nullable', 'string'],
+            'business_description' => ['nullable', 'string'],
+            'benefit'              => ['nullable', 'string'],
+            'memo'                 => ['nullable', 'string'],
         ]);
 
         $validator->setAttributeNames(['name' => '企業名']);

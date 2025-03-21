@@ -66,6 +66,7 @@ class CompanyController extends Controller
             'establish_date',
             'employee_number',
             'listing_class',
+            'business_description',
             'benefit',
             'memo'
         ]);
@@ -99,6 +100,7 @@ class CompanyController extends Controller
             'establish_date',
             'employee_number',
             'listing_class',
+            'business_description',
             'benefit',
             'memo'
         ]);
