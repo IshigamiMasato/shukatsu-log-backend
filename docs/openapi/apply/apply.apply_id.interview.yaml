@@ -1,0 +1,107 @@
+post:
+  summary: 面接情報登録
+  tags:
+    - apply
+    - interview
+  parameters:
+    - name: apply_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: false
+          properties:
+            interview_date:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+              description: 面接日
+            interviewer_info:
+              type: string
+              description: 面接官情報
+            memo:
+              type: string
+              description: メモ
+          required:
+            - interview_date
+        example:
+          {
+            "interview_date": "2025-01-01",
+            "interviewer_info": "面接官情報面接官情報",
+            "memo": "メモメモメモ",
+          }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/Interview"
+          example:
+            {
+              "interview_id": 1,
+              "apply_id": 1,
+              "interview_date": "2025-01-01",
+              "interviewer_info": "面接官情報面接官情報",
+              "memo": "メモメモメモ",
+              "created_at": "2025-01-01 12:34:56",
+              "updated_at": "2025-01-01 12:34:56",
+            }
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/BadRequestResponse"
+          example:
+            {
+              "code": "BAD_REQUEST",
+              "errors": {
+                "interview_date": ["面接日は、必ず指定してください。"]
+              }
+            }
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/UnauthorizedResponse"
+          example:
+            {
+              "code": "UNAUTHORIZED"
+            }
+    "404":
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                enum:
+                  - USER_NOT_FOUND
+                  - APPLY_NOT_FOUND
+                description: |
+                  エラーコード:
+                  - `USER_NOT_FOUND`: ユーザ情報が存在しない
+                  - `APPLY_NOT_FOUND`: 応募情報が存在しない
+            required:
+              - code
+          example:
+            {
+              "code": "USER_NOT_FOUND"
+            }
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/InternalServerErrorResponse"
+          example:
+            {
+              "code": "INTERNAL_SERVER_ERROR"
+            }
+  security:
+    - BearerAuth: []
