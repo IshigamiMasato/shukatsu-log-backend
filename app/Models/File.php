@@ -10,6 +10,8 @@ class File extends Model
 
     protected $primaryKey = 'file_id';
 
+    const UPDATED_AT = null;
+
     /**
      * The attributes that are mass assignable.
      *
