@@ -28,6 +28,16 @@ paths:
     $ref: ./apply/apply.yaml
   /api/apply/{apply_id}:
     $ref: ./apply/apply.apply_id.yaml
+  /api/apply/{apply_id}/document:
+    $ref: ./apply/apply.apply_id.document.yaml
+  /api/apply/{apply_id}/document/{document_id}:
+    $ref: ./apply/apply.apply_id.document.document_id.yaml
+  /api/apply/{apply_id}/document/{document_id}/file/{file_id}:
+    $ref: ./apply/apply.apply_id.document.document_id.file.file_id.yaml
+  /api/apply/{apply_id}/exam:
+    $ref: ./apply/apply.apply_id.exam.yaml
+  /api/apply/{apply_id}/exam/{exam_id}:
+    $ref: ./apply/apply.apply_id.exam.exam_id.yaml
 
 components:
   schemas:
@@ -39,6 +49,12 @@ components:
       $ref: ./schemas/companies/Company.yaml
     Apply:
       $ref: ./schemas/applies/Apply.yaml
+    Document:
+      $ref: ./schemas/Document.yaml
+    File:
+      $ref: ./schemas/File.yaml
+    Exam:
+      $ref: ./schemas/Exam.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
