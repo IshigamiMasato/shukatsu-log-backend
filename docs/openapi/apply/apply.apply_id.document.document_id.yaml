@@ -1,7 +1,6 @@
 get:
   summary: 応募書類詳細取得
   tags:
-    - apply
     - document
   parameters:
     - name: apply_id
@@ -87,7 +86,6 @@ get:
 put:
   summary: 応募書類更新
   tags:
-    - apply
     - document
   parameters:
     - name: apply_id
@@ -226,7 +224,6 @@ put:
 delete:
   summary: 応募書類削除
   tags:
-    - apply
     - document
   parameters:
     - name: apply_id

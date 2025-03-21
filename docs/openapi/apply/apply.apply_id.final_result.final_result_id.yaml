@@ -1,7 +1,6 @@
 get:
   summary: 選考終了詳細取得
   tags:
-    - apply
     - final result
   parameters:
     - name: apply_id
@@ -77,7 +76,6 @@ get:
 put:
   summary: 選考終了情報更新
   tags:
-    - apply
     - final result
   parameters:
     - name: apply_id
@@ -196,7 +194,6 @@ put:
 delete:
   summary: 選考終了情報削除
   tags:
-    - apply
     - final result
   parameters:
     - name: apply_id

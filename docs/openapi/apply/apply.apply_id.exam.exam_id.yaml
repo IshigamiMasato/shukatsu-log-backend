@@ -1,7 +1,6 @@
 get:
   summary: 試験詳細取得
   tags:
-    - apply
     - exam
   parameters:
     - name: apply_id
@@ -78,7 +77,6 @@ get:
 put:
   summary: 試験情報更新
   tags:
-    - apply
     - exam
   parameters:
     - name: apply_id
@@ -194,7 +192,6 @@ put:
 delete:
   summary: 試験情報削除
   tags:
-    - apply
     - exam
   parameters:
     - name: apply_id

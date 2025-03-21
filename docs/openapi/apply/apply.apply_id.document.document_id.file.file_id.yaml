@@ -1,9 +1,7 @@
 delete:
   summary: 応募ファイル削除
   tags:
-    - apply
     - document
-    - file
   parameters:
     - name: apply_id
       in: path

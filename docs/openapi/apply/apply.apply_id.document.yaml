@@ -1,7 +1,6 @@
 post:
   summary: 応募書類登録
   tags:
-    - apply
     - document
   parameters:
     - name: apply_id

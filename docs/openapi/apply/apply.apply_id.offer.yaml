@@ -1,7 +1,6 @@
 post:
   summary: 内定情報登録
   tags:
-    - apply
     - offer
   parameters:
     - name: apply_id

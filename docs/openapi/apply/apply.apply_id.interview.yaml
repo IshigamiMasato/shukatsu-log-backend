@@ -1,7 +1,6 @@
 post:
   summary: 面接情報登録
   tags:
-    - apply
     - interview
   parameters:
     - name: apply_id
