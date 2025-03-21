@@ -63,7 +63,7 @@ paths:
 components:
   schemas:
     AuthInfo:
-      $ref: ./schemas/AuthInfo.yaml
+      $ref: ./schemas/auth/AuthInfo.yaml
     User:
       $ref: ./schemas/users/User.yaml
     Event:
@@ -73,17 +73,17 @@ components:
     Apply:
       $ref: ./schemas/applies/Apply.yaml
     Document:
-      $ref: ./schemas/Document.yaml
+      $ref: ./schemas/applies/process/Document.yaml
     File:
-      $ref: ./schemas/File.yaml
+      $ref: ./schemas/applies/process/File.yaml
     Exam:
-      $ref: ./schemas/Exam.yaml
+      $ref: ./schemas/applies/process/Exam.yaml
     Interview:
-      $ref: ./schemas/Interview.yaml
+      $ref: ./schemas/applies/process/Interview.yaml
     Offer:
-      $ref: ./schemas/Offer.yaml
+      $ref: ./schemas/applies/process/Offer.yaml
     FinalResult:
-      $ref: ./schemas/FinalResult.yaml
+      $ref: ./schemas/applies/process/FinalResult.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
