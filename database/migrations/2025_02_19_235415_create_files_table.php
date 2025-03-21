@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('path');
             $table->dateTime('created_at')->useCurrent()->nullable();
-            $table->dateTime('updated_at')->useCurrent()->nullable();
         });
     }
 
