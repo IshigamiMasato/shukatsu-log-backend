@@ -42,6 +42,8 @@ paths:
     $ref: ./apply/apply.apply_id.interview.yaml
   /api/apply/{apply_id}/interview/{interview_id}:
     $ref: ./apply/apply.apply_id.interview.interview_id.yaml
+  /api/apply/{apply_id}/offer:
+    $ref: ./apply/apply.apply_id.offer.yaml
 
 components:
   schemas:
@@ -61,6 +63,8 @@ components:
       $ref: ./schemas/Exam.yaml
     Interview:
       $ref: ./schemas/Interview.yaml
+    Offer:
+      $ref: ./schemas/Offer.yaml
 
     BadRequestResponse:
       $ref: ./schemas/error/BadRequestResponse.yaml
