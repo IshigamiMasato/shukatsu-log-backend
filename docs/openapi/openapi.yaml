@@ -11,6 +11,8 @@ servers:
 paths:
   /api/login:
     $ref: ./auth/login.yaml
+  /api/token/refresh:
+    $ref: ./auth/token.refresh.yaml
 
   /api/user:
     $ref: ./user/user.yaml
