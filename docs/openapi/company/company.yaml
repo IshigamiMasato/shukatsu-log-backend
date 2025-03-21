@@ -3,24 +3,9 @@ get:
   tags:
     - company
   parameters:
-    - name: name
+    - name: keyword
       in: query
-      description: 企業名
-      schema:
-        type: string
-    - name: url
-      in: query
-      description: 企業URL
-      schema:
-        type: string
-    - name: president
-      in: query
-      description: 社長名
-      schema:
-        type: string
-    - name: address
-      in: query
-      description: 住所
+      description: 検索ワード
       schema:
         type: string
     - name: from_establish_date
@@ -47,16 +32,6 @@ get:
       description: 従業員数の終了人数
       schema:
         type: integer
-    - name: benefit
-      in: query
-      description: 福利厚生
-      schema:
-        type: string
-    - name: memo
-      in: query
-      description: メモ
-      schema:
-        type: string
     - name: offset
       in: query
       description: 取得レコードのオフセット
