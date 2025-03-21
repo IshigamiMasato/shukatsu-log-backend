@@ -13,6 +13,8 @@ paths:
     $ref: ./auth/login.yaml
   /api/token/refresh:
     $ref: ./auth/token.refresh.yaml
+  /api/logout:
+    $ref: ./auth/logout.yaml
 
   /api/user:
     $ref: ./user/user.yaml
