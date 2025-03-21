@@ -36,6 +36,8 @@ paths:
     $ref: ./apply/apply.apply_id.document.document_id.file.file_id.yaml
   /api/apply/{apply_id}/exam:
     $ref: ./apply/apply.apply_id.exam.yaml
+  /api/apply/{apply_id}/exam/{exam_id}:
+    $ref: ./apply/apply.apply_id.exam.exam_id.yaml
 
 components:
   schemas:
