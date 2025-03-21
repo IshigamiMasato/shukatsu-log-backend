@@ -40,6 +40,8 @@ paths:
     $ref: ./apply/apply.apply_id.exam.exam_id.yaml
   /api/apply/{apply_id}/interview:
     $ref: ./apply/apply.apply_id.interview.yaml
+  /api/apply/{apply_id}/interview/{interview_id}:
+    $ref: ./apply/apply.apply_id.interview.interview_id.yaml
 
 components:
   schemas:
