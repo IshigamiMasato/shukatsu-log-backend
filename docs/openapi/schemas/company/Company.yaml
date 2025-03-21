@@ -29,6 +29,9 @@ properties:
   listing_class:
     type: string
     description: 上場区分
+  business_description:
+    type: string
+    description: 事業内容
   benefit:
     type: string
     description: 福利厚生

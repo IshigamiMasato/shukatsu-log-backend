@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('establish_date')->nullable();
             $table->unsignedInteger('employee_number')->nullable();
             $table->string('listing_class')->nullable();
+            $table->text('business_description')->nullable();
             $table->text('benefit')->nullable();
             $table->text('memo')->nullable();
             $table->dateTime('created_at')->useCurrent()->nullable();

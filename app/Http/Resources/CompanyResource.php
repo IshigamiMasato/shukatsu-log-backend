@@ -19,6 +19,7 @@ class CompanyResource extends JsonResource
             'establish_date' => $this->establish_date,
             'employee_number' => $this->employee_number,
             'listing_class' => $this->listing_class,
+            'business_description' => $this->business_description,
             'benefit' => $this->benefit,
             'memo' => $this->memo,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
