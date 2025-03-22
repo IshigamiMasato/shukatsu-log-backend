@@ -12,38 +12,49 @@ properties:
     description: 企業名
   url:
     type: string
+    nullable: true
     description: 企業URL
   president:
     type: string
+    nullable: true
     description: 社長名
   address:
     type: string
+    nullable: true
     description: 住所
   establish_date:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2}$"
     description: 設立年月日
   employee_number:
     type: integer
+    nullable: true
     description: 従業員数
   listing_class:
     type: string
+    nullable: true
     description: 上場区分
   business_description:
     type: string
+    nullable: true
     description: 事業内容
   benefit:
     type: string
+    nullable: true
     description: 福利厚生
   memo:
     type: string
+    nullable: true
     description: メモ
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   updated_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
 required:
