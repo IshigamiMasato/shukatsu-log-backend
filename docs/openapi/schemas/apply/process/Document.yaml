@@ -25,7 +25,7 @@ properties:
   files:
     type: array
     items:
-      $ref: "#components/schemas/File"
+      $ref: "./File.yaml"
 required:
   - document_id
   - apply_id
