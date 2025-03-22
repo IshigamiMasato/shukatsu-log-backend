@@ -16,11 +16,11 @@ get:
             type: array
             items:
               oneOf:
-                - $ref: "#components/schemas/Document"
-                - $ref: "#components/schemas/Exam"
-                - $ref: "#components/schemas/Interview"
-                - $ref: "#components/schemas/Offer"
-                - $ref: "#components/schemas/FinalResult"
+                - $ref: "../schemas/apply/process/Document.yaml"
+                - $ref: "../schemas/apply/process/Exam.yaml"
+                - $ref: "../schemas/apply/process/Interview.yaml"
+                - $ref: "../schemas/apply/process/Offer.yaml"
+                - $ref: "../schemas/apply/process/FinalResult.yaml"
           example:
             [
               {
@@ -81,7 +81,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -112,7 +112,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"

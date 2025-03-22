@@ -14,7 +14,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/AuthInfo"
+            $ref: "../schemas/auth/AuthInfo.yaml"
           example:
             {
               "access_token": "アクセストークンの文字列",
@@ -47,7 +47,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"

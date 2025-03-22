@@ -43,7 +43,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/Offer"
+            $ref: "../schemas/apply/process/Offer.yaml"
           example:
             {
               "offer_id": 1,
@@ -59,7 +59,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/BadRequestResponse"
+            $ref: "../schemas/error/BadRequestResponse.yaml"
           example:
             {
               "code": "BAD_REQUEST",
@@ -71,7 +71,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -102,7 +102,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"

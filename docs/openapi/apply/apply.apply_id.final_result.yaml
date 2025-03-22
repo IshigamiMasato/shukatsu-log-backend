@@ -42,7 +42,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/FinalResult"
+            $ref: "../schemas/apply/process/FinalResult.yaml"
           example:
             {
               "final_result_id": 1,
@@ -56,7 +56,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/BadRequestResponse"
+            $ref: "../schemas/error/BadRequestResponse.yaml"
           example:
             {
               "code": "BAD_REQUEST",
@@ -68,7 +68,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -99,7 +99,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"

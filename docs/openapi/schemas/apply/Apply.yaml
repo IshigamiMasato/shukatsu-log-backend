@@ -45,7 +45,7 @@ properties:
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   company:
-    $ref: "#components/schemas/Company"
+    $ref: "../company/Company.yaml"
 required:
   - apply_id
   - user_id

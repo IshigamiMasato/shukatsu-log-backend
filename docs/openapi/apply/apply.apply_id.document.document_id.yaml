@@ -18,7 +18,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/Document"
+            $ref: "../schemas/apply/process/Document.yaml"
           example:
             {
               "document_id": 1,
@@ -41,7 +41,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -74,7 +74,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"
@@ -143,7 +143,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/Document"
+            $ref: "../schemas/apply/process/Document.yaml"
           example:
             {
               "document_id": 1,
@@ -166,7 +166,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/BadRequestResponse"
+            $ref: "../schemas/error/BadRequestResponse.yaml"
           example:
             {
               "code": "BAD_REQUEST",
@@ -178,7 +178,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -211,7 +211,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"
@@ -239,7 +239,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/Document"
+            $ref: "../schemas/apply/process/Document.yaml"
           example:
             {
               "document_id": 1,
@@ -262,7 +262,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/UnauthorizedResponse"
+            $ref: "../schemas/error/UnauthorizedResponse.yaml"
           example:
             {
               "code": "UNAUTHORIZED"
@@ -295,7 +295,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: "#components/schemas/InternalServerErrorResponse"
+            $ref: "../schemas/error/InternalServerErrorResponse.yaml"
           example:
             {
               "code": "INTERNAL_SERVER_ERROR"
