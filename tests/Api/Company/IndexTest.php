@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Api\Company;
+
 use App\Models\Company;
 use App\Models\User;
 use Carbon\Carbon;
