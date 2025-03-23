@@ -3,11 +3,13 @@
 namespace App\Http\Middleware;
 
 use App\Traits\ResponseTrait;
+use Carbon\Carbon;
 use Closure;
 use Exception;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
@@ -25,6 +27,11 @@ class Authenticate
 
         // JWT検証
         try {
+            // 時間依存ロジックをテストで確認する用
+            if ( App::environment('testing') ) {
+                JWT::$timestamp = Carbon::now()->timestamp;
+            }
+
             $decoded = JWT::decode( $jwt, new Key(env('JWT_SECRET'), env('JWT_ALG')) );
 
             // ログアウト済 または リフレッシュ済 トークンは無効とする
