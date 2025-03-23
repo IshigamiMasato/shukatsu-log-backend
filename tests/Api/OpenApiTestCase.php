@@ -2,12 +2,12 @@
 
 namespace Tests\Api;
 
-use Laravel\Lumen\Testing\DatabaseTransactions;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 abstract class OpenApiTestCase extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseMigrations;
     use OpenApiAssertions;
 
     /** @var boolean */
