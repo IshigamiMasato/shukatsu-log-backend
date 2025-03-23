@@ -37,13 +37,16 @@ properties:
     description: "終了（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   memo:
     type: string
+    nullable: true
     description: メモ
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   updated_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
 required:
