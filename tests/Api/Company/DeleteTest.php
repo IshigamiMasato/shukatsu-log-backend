@@ -73,7 +73,7 @@ class DeleteTest extends TestCaseWithAuth
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 
-    public function test_store_company_company_not_found()
+    public function test_delete_company_company_not_found()
     {
         $notExistsCompanyId = 9999999;
 
