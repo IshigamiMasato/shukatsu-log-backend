@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Api\Company;
+namespace Tests\Api\Event;
 
-use App\Models\Company;
+use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,13 +14,13 @@ class DeleteTest extends TestCaseWithAuth
     private $method = 'DELETE';
 
     /** @var string */
-    private $path = '/api/company/{company_id}';
+    private $path = '/api/event/{event_id}';
 
-    public function test_delete_company()
+    public function test_delete_event()
     {
-        $company = Company::factory()->create(['user_id' => $this->user->user_id]);
+        $event = Event::factory()->create(['user_id' => $this->user->user_id]);
 
-        $path = preg_replace('/{.*}/', $company->company_id, $this->path);
+        $path = preg_replace('/{.*}/', $event->event_id, $this->path);
 
         $this->json($this->method, $path, [], ['Authorization' => 'Bearer ' . $this->token]);
 
@@ -28,11 +28,11 @@ class DeleteTest extends TestCaseWithAuth
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 
-    public function test_delete_company_invalid_token()
+    public function test_delete_event_invalid_token()
     {
-        $company = Company::factory()->create(['user_id' => $this->user->user_id]);
+        $event = Event::factory()->create(['user_id' => $this->user->user_id]);
 
-        $path = preg_replace('/{.*}/', $company->company_id, $this->path);
+        $path = preg_replace('/{.*}/', $event->event_id, $this->path);
 
         $this->json($this->method, $path, [], ['Authorization' => 'Bearer ' . 'Invalid Token']);
 
@@ -41,11 +41,11 @@ class DeleteTest extends TestCaseWithAuth
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 
-    public function test_delete_company_expired_token()
+    public function test_delete_event_expired_token()
     {
-        $company = Company::factory()->create(['user_id' => $this->user->user_id]);
+        $event = Event::factory()->create(['user_id' => $this->user->user_id]);
 
-        $path = preg_replace('/{.*}/', $company->company_id, $this->path);
+        $path = preg_replace('/{.*}/', $event->event_id, $this->path);
 
         Carbon::setTestNow(Carbon::now()->addHours(2));
 
@@ -58,11 +58,11 @@ class DeleteTest extends TestCaseWithAuth
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 
-    public function test_delete_company_user_not_found()
+    public function test_delete_event_user_not_found()
     {
-        $company = Company::factory()->create(['user_id' => $this->user->user_id]);
+        $event = Event::factory()->create(['user_id' => $this->user->user_id]);
 
-        $path = preg_replace('/{.*}/', $company->company_id, $this->path);
+        $path = preg_replace('/{.*}/', $event->event_id, $this->path);
 
         User::where('email', $this->user->email)->delete();
 
@@ -73,16 +73,16 @@ class DeleteTest extends TestCaseWithAuth
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 
-    public function test_delete_company_company_not_found()
+    public function test_delete_event_event_not_found()
     {
-        $notExistsCompanyId = 9999999;
+        $notExistsEventId = 9999999;
 
-        $path = preg_replace('/{.*}/', $notExistsCompanyId, $this->path);
+        $path = preg_replace('/{.*}/', $notExistsEventId, $this->path);
 
         $this->json($this->method, $path, [], ['Authorization' => 'Bearer ' . $this->token]);
 
         $this->response->assertStatus(Response::HTTP_NOT_FOUND);
-        $this->assertEquals(config('api.response.code.company_not_found'), $this->response->json()['code']);
+        $this->assertEquals(config('api.response.code.event_not_found'), $this->response->json()['code']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 }

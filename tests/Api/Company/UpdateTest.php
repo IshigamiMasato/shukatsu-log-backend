@@ -86,7 +86,7 @@ class UpdateTest extends TestCaseWithAuth
     /**
      * @dataProvider getValidPutData
      */
-    public function test_store_company_user_not_found(array $validPutData)
+    public function test_update_company_user_not_found(array $validPutData)
     {
         $company = Company::factory()->create(['user_id' => $this->user->user_id]);
 
@@ -104,7 +104,7 @@ class UpdateTest extends TestCaseWithAuth
     /**
      * @dataProvider getValidPutData
      */
-    public function test_store_company_company_not_found(array $validPutData)
+    public function test_update_company_company_not_found(array $validPutData)
     {
         $notExistsCompanyId = 9999999;
 
