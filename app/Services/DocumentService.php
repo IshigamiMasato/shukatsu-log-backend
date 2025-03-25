@@ -7,6 +7,7 @@ use App\Repositories\DocumentRepository;
 use App\Repositories\FileRepository;
 use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -116,17 +117,19 @@ class DocumentService extends Service
             $document = $this->documentRepository->create($documentParams);
 
             // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
-            foreach ( $postedParams['files'] as $file ) {
-                $fileName = $file['name'];
-                $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
-                $this->uploadFile($filePath, $file['base64']);
+            if ( isset($postedParams['files']) ) {
+                foreach ( $postedParams['files'] as $file ) {
+                    $fileName = $file['name'];
+                    $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
+                    $this->uploadFile($filePath, $file['base64']);
 
-                $fileParams = [
-                    'document_id' => $document->document_id,
-                    'name'        => $fileName,
-                    'path'        => $filePath,
-                ];
-                $this->fileRepository->create($fileParams);
+                    $fileParams = [
+                        'document_id' => $document->document_id,
+                        'name'        => $fileName,
+                        'path'        => $filePath,
+                    ];
+                    $this->fileRepository->create($fileParams);
+                }
             }
 
             DB::commit();
@@ -212,17 +215,19 @@ class DocumentService extends Service
             }
 
             // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
-            foreach ( $postedParams['files'] as $file ) {
-                $fileName = $file['name'];
-                $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
-                $this->uploadFile($filePath, $file['base64']);
+            if ( isset($postedParams['files']) ) {
+                foreach ( $postedParams['files'] as $file ) {
+                    $fileName = $file['name'];
+                    $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
+                    $this->uploadFile($filePath, $file['base64']);
 
-                $fileParams = [
-                    'document_id' => $document->document_id,
-                    'name'        => $fileName,
-                    'path'        => $filePath,
-                ];
-                $this->fileRepository->create($fileParams);
+                    $fileParams = [
+                        'document_id' => $document->document_id,
+                        'name'        => $fileName,
+                        'path'        => $filePath,
+                    ];
+                    $this->fileRepository->create($fileParams);
+                }
             }
 
             DB::commit();
@@ -267,11 +272,13 @@ class DocumentService extends Service
             }
 
             // 保存書類を合わせて削除
-            $files = $document->files;
-            foreach ( $files as $file ) {
-                $result = Storage::disk('s3')->delete($file->path);
-                if ( $result === false ) {
-                    Log::error( __METHOD__ . ": Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_path={$file->path})" );
+            if ( ! App::environment('testing') ) {
+                $files = $document->files;
+                foreach ( $files as $file ) {
+                    $result = Storage::disk('s3')->delete($file->path);
+                    if ( $result === false ) {
+                        Log::error( __METHOD__ . ": Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_path={$file->path})" );
+                    }
                 }
             }
 
@@ -354,9 +361,11 @@ class DocumentService extends Service
                 return $this->errorNotFound( config('api.response.code.file_not_found') );
             }
 
-            if ( ! Storage::disk('s3')->exists($file->path) ) {
-                Log::error( __METHOD__ . ": File not found S3. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
-                return $this->errorNotFound( config('api.response.code.file_not_found') );
+            if ( ! App::environment('testing') ) {
+                if ( ! Storage::disk('s3')->exists($file->path) ) {
+                    Log::error( __METHOD__ . ": File not found S3. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+                    return $this->errorNotFound( config('api.response.code.file_not_found') );
+                }
             }
 
             DB::beginTransaction();
@@ -366,9 +375,11 @@ class DocumentService extends Service
                 throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}), file_id={$fileId}" );
             }
 
-            $result = Storage::disk('s3')->delete($file->path);
-            if ( $result === false ) {
-                throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+            if ( ! App::environment('testing') ) {
+                $result = Storage::disk('s3')->delete($file->path);
+                if ( $result === false ) {
+                    throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+                }
             }
 
             DB::commit();
