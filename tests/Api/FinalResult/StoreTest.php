@@ -142,13 +142,13 @@ class StoreTest extends TestCaseWithAuth
             // 無効なstatus
             [
                 [
-                    "type" => 0,
+                    "status" => 0,
                     "memo" => "メモメモメモ",
                 ]
             ],
             [
                 [
-                    "type" => 4,
+                    "status" => 4,
                     "memo" => "メモメモメモ",
                 ]
             ],
