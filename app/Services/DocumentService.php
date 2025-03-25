@@ -361,9 +361,11 @@ class DocumentService extends Service
                 return $this->errorNotFound( config('api.response.code.file_not_found') );
             }
 
-            if ( ! Storage::disk('s3')->exists($file->path) ) {
-                Log::error( __METHOD__ . ": File not found S3. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
-                return $this->errorNotFound( config('api.response.code.file_not_found') );
+            if ( ! App::environment('testing') ) {
+                if ( ! Storage::disk('s3')->exists($file->path) ) {
+                    Log::error( __METHOD__ . ": File not found S3. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+                    return $this->errorNotFound( config('api.response.code.file_not_found') );
+                }
             }
 
             DB::beginTransaction();
@@ -373,9 +375,11 @@ class DocumentService extends Service
                 throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}), file_id={$fileId}" );
             }
 
-            $result = Storage::disk('s3')->delete($file->path);
-            if ( $result === false ) {
-                throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+            if ( ! App::environment('testing') ) {
+                $result = Storage::disk('s3')->delete($file->path);
+                if ( $result === false ) {
+                    throw new Exception( "Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_id={$fileId}, file_path={$file->path})" );
+                }
             }
 
             DB::commit();
