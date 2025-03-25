@@ -115,7 +115,7 @@ class ApplyService extends Service
 
             $apply = $this->applyRepository->create($params);
 
-            return $apply;
+            return $apply->fresh();
 
         } catch ( Exception $e ) {
             Log::error(__METHOD__);
