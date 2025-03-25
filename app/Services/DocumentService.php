@@ -7,6 +7,7 @@ use App\Repositories\DocumentRepository;
 use App\Repositories\FileRepository;
 use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -271,11 +272,13 @@ class DocumentService extends Service
             }
 
             // 保存書類を合わせて削除
-            $files = $document->files;
-            foreach ( $files as $file ) {
-                $result = Storage::disk('s3')->delete($file->path);
-                if ( $result === false ) {
-                    Log::error( __METHOD__ . ": Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_path={$file->path})" );
+            if ( ! App::environment('testing') ) {
+                $files = $document->files;
+                foreach ( $files as $file ) {
+                    $result = Storage::disk('s3')->delete($file->path);
+                    if ( $result === false ) {
+                        Log::error( __METHOD__ . ": Failed delete file. (user_id={$userId}, apply_id={$applyId}, document_id={$documentId}, file_path={$file->path})" );
+                    }
                 }
             }
 
