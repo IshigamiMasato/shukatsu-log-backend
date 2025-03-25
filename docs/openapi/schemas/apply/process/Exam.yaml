@@ -34,7 +34,7 @@ properties:
     enum:
       - 2
     description: |
-      プロセスタイプ: 筆記試験選考中
+      プロセスタイプ:
       選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - exam_id

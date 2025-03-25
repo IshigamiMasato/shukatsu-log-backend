@@ -38,7 +38,7 @@ properties:
     enum:
       - 5
     description: |
-      プロセスタイプ: 選考終了
+      プロセスタイプ:
       選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - final_result_id
