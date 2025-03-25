@@ -214,17 +214,19 @@ class DocumentService extends Service
             }
 
             // ファイルをストレージへ保存 && DBにファイルアップロード情報を保存
-            foreach ( $postedParams['files'] as $file ) {
-                $fileName = $file['name'];
-                $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
-                $this->uploadFile($filePath, $file['base64']);
+            if ( isset($postedParams['files']) ) {
+                foreach ( $postedParams['files'] as $file ) {
+                    $fileName = $file['name'];
+                    $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
+                    $this->uploadFile($filePath, $file['base64']);
 
-                $fileParams = [
-                    'document_id' => $document->document_id,
-                    'name'        => $fileName,
-                    'path'        => $filePath,
-                ];
-                $this->fileRepository->create($fileParams);
+                    $fileParams = [
+                        'document_id' => $document->document_id,
+                        'name'        => $fileName,
+                        'path'        => $filePath,
+                    ];
+                    $this->fileRepository->create($fileParams);
+                }
             }
 
             DB::commit();
