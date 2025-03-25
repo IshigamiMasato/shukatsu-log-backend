@@ -243,14 +243,14 @@ class ApplyService extends Service
         $exams = $apply->exams->map(function ($exam) {
             return $exam->setAttribute( 'type', config('const.applies.status.exam_selection') );
         });
-        $interviews = $apply->interviews->map(function ($exam) {
-            return $exam->setAttribute( 'type', config('const.applies.status.interview_selection') );
+        $interviews = $apply->interviews->map(function ($interview) {
+            return $interview->setAttribute( 'type', config('const.applies.status.interview_selection') );
         });
         $offers = $apply->offers->map(function ($offer) {
             return $offer->setAttribute( 'type', config('const.applies.status.offer') );
         });
-        $finalResults = $apply->finalResults->map(function ($offer) {
-            return $offer->setAttribute( 'type', config('const.applies.status.final') );
+        $finalResults = $apply->finalResults->map(function ($finalResult) {
+            return $finalResult->setAttribute( 'type', config('const.applies.status.final') );
         });
 
         // 応募書類、試験情報、面接情報、内定情報を各日付カラムの降順で並び替え

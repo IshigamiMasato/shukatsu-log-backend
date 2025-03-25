@@ -15,6 +15,7 @@ properties:
     description: ファイルパス
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
 required:
