@@ -56,12 +56,12 @@ class ExamController extends Controller
         }
 
         $exam = $this->service->store($userId, $applyId, $postedParams);
-        if ( isset($document['error_code']) ) {
-            if ( $document['error_code'] == config('api.response.code.user_not_found') ) {
+        if ( isset($exam['error_code']) ) {
+            if ( $exam['error_code'] == config('api.response.code.user_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.user_not_found') );
             }
 
-            if ( $document['error_code'] == config('api.response.code.apply_not_found') ) {
+            if ( $exam['error_code'] == config('api.response.code.apply_not_found') ) {
                 return $this->responseNotFound( code: config('api.response.code.apply_not_found') );
             }
 
