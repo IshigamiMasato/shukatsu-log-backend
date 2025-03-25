@@ -13,19 +13,30 @@ properties:
     description: 書類提出日
   memo:
     type: string
+    nullable: true
     description: メモ
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   updated_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   files:
     type: array
     items:
       $ref: "./File.yaml"
+  # openapi-psr7-validatorで別スキーマを合算して参照できなかったため、こちらに定義
+  type:
+    type: integer
+    enum:
+      - 1
+    description: |
+      プロセスタイプ: 書類選考中
+      選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - document_id
   - apply_id

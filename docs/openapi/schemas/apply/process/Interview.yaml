@@ -13,18 +13,30 @@ properties:
     description: 面接日
   interviewer_info:
     type: string
+    nullable: true
     description: 面接官情報
   memo:
     type: string
+    nullable: true
     description: メモ
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   updated_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
+  # openapi-psr7-validatorで別スキーマを合算して参照できなかったため、こちらに定義
+  type:
+    type: integer
+    enum:
+      - 3
+    description: |
+      プロセスタイプ: 面接選考中
+      選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - interview_id
   - apply_id

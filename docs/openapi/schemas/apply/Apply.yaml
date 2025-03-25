@@ -32,16 +32,20 @@ properties:
     description: 職種
   apply_route:
     type: string
+    nullable: true
     description: 応募経路
   memo:
     type: string
+    nullable: true
     description: メモ
   created_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "作成日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   updated_at:
     type: string
+    nullable: true
     pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
     description: "更新日（フォーマット: `YYYY-MM-DD HH:mm:ss`）"
   company:
