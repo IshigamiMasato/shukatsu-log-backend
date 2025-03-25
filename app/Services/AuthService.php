@@ -102,7 +102,7 @@ class AuthService extends Service
             return [
                 'access_token' => $newJWT,
                 'token_type'   => 'bearer',
-                'expires_in'   => env('JWT_TTL')
+                'expires_in'   => (int) env('JWT_TTL'),
             ];
 
         } catch ( Exception $e ) {
