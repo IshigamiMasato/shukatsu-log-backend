@@ -35,7 +35,7 @@ properties:
     enum:
       - 1
     description: |
-      プロセスタイプ: 書類選考中
+      プロセスタイプ:
       選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - document_id

@@ -35,7 +35,7 @@ properties:
     enum:
       - 3
     description: |
-      プロセスタイプ: 面接選考中
+      プロセスタイプ:
       選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - interview_id

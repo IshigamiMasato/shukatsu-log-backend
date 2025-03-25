@@ -39,7 +39,7 @@ properties:
     enum:
       - 4
     description: |
-      プロセスタイプ: 内定
+      プロセスタイプ:
       選考履歴取得APIでのみ必須で付与されるプロパティ
 required:
   - offer_id
