@@ -26,18 +26,28 @@ class GetProcessTest extends TestCaseWithAuth
     {
         $apply = Apply::factory()->create(['user_id' => $this->user->user_id]);
 
-        Document::factory()->create(['apply_id' => $apply->apply_id]);
-        Exam::factory()->create(['apply_id' => $apply->apply_id]);
-        Interview::factory()->create(['apply_id' => $apply->apply_id]);
-        Offer::factory()->create(['apply_id' => $apply->apply_id]);
+        Document::factory()->create(['apply_id' => $apply->apply_id, 'submission_date' => '2025-01-01']);
+        Exam::factory()->create(['apply_id' => $apply->apply_id, 'exam_date' => '2025-02-01']);
+        Interview::factory()->create(['apply_id' => $apply->apply_id, 'interview_date' => '2025-02-15']);
+        Offer::factory()->create(['apply_id' => $apply->apply_id, 'offer_date' => '2025-03-01']);
         FinalResult::factory()->create(['apply_id' => $apply->apply_id]);
 
         $path = preg_replace('/{.*}/', $apply->apply_id, $this->path);
 
         $this->json($this->method, $path, [], ['Authorization' => 'Bearer ' . $this->token]);
+        $res = $this->response->json();
 
         $this->response->assertStatus(Response::HTTP_OK);
-        $this->assertCount(5, $this->response->json());
+        $this->assertCount(5, $res);
+
+        // FinalResultの並び順が一番先頭になっているか
+        $this->assertEquals(config('const.applies.status.final'), $res[0]['type']);
+        // 各日付カラムの降順の並び順になっているか
+        $this->assertEquals(config('const.applies.status.offer'), $res[1]['type']);
+        $this->assertEquals(config('const.applies.status.interview_selection'), $res[2]['type']);
+        $this->assertEquals(config('const.applies.status.exam_selection'), $res[3]['type']);
+        $this->assertEquals(config('const.applies.status.document_selection'), $res[4]['type']);
+
         $this->assertValidateResponse($this->method, $this->path, $this->response);
     }
 

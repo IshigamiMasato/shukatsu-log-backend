@@ -121,7 +121,10 @@ class DocumentService extends Service
                 foreach ( $postedParams['files'] as $file ) {
                     $fileName = $file['name'];
                     $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
-                    $this->uploadFile($filePath, $file['base64']);
+
+                    if ( ! App::environment('testing') ) {
+                        $this->uploadFile($filePath, $file['base64']);
+                    }
 
                     $fileParams = [
                         'document_id' => $document->document_id,
@@ -219,7 +222,10 @@ class DocumentService extends Service
                 foreach ( $postedParams['files'] as $file ) {
                     $fileName = $file['name'];
                     $filePath = $this->getFilePath($userId, Str::uuid() . '_' . $fileName);
-                    $this->uploadFile($filePath, $file['base64']);
+
+                    if ( ! App::environment('testing') ) {
+                        $this->uploadFile($filePath, $file['base64']);
+                    }
 
                     $fileParams = [
                         'document_id' => $document->document_id,

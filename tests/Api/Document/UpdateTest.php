@@ -154,6 +154,18 @@ class UpdateTest extends TestCaseWithAuth
                     "memo" => "メモメモメモ",
                 ]
             ],
+            [
+                [
+                    "submission_date" => "2025-03-01",
+                    "files" => [
+                        [
+                            "name" => "履歴書",
+                            "base64" => "base64の文字列",
+                        ]
+                    ],
+                    "memo" => "メモメモメモ",
+                ]
+            ],
         ];
     }
 
@@ -182,7 +194,7 @@ class UpdateTest extends TestCaseWithAuth
                     "submission_date" => "2025-03-01",
                     "files" => [
                         [
-                            "name" => "ファイル名",
+                            "name" => "履歴書",
                         ]
                     ],
                     "memo" => "メモメモメモ",
@@ -194,7 +206,7 @@ class UpdateTest extends TestCaseWithAuth
                     "submission_date" => "2025-03-01",
                     "files" => [
                         [
-                            "base64" => "base64",
+                            "base64" => "base64の文字列",
                         ]
                     ],
                     "memo" => "メモメモメモ",
