@@ -16,7 +16,7 @@ class GetStatusSummaryTest extends TestCaseWithAuth
     /** @var string */
     private $path = '/api/apply/status-summary';
 
-    public function test_get_status_summary_with_correct_counts()
+    public function test_get_status_summary()
     {
         Apply::factory()->count(1)->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.unregistered_selection_process')]);
         Apply::factory()->count(1)->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.document_selection')]);

@@ -41,28 +41,30 @@ class IndexTest extends TestCaseWithAuth
 
     public function test_get_applies_with_keyword_filter()
     {
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'occupation' => 'エンジニア']);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'apply_route' => 'Wantedly']);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'memo' => 'メモメモメモ']);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'occupation' => '職種職種']);
+        $apply1 = Apply::factory()->create(['user_id' => $this->user->user_id, 'occupation' => 'エンジニア']);
+        $apply2 = Apply::factory()->create(['user_id' => $this->user->user_id, 'apply_route' => 'Wantedly']);
+        $apply3 = Apply::factory()->create(['user_id' => $this->user->user_id, 'memo' => 'メモメモメモ']);
 
         // occupationで部分一致検索
         $this->json($this->method, $this->path, ['keyword' => 'エンジ'], ['Authorization' => 'Bearer ' . $this->token]);
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['apply_id' => $apply1->apply_id]);
         $this->assertEquals(1, $this->response->json()['total']);
         $this->assertCount(1, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
 
         // apply_routeで部分一致検索
         $this->json($this->method, $this->path, ['keyword' => 'anted'], ['Authorization' => 'Bearer ' . $this->token]);
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['apply_id' => $apply2->apply_id]);
         $this->assertEquals(1, $this->response->json()['total']);
         $this->assertCount(1, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
 
         // memoで部分一致検索
         $this->json($this->method, $this->path, ['keyword' => 'メモ'], ['Authorization' => 'Bearer ' . $this->token]);
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['apply_id' => $apply3->apply_id]);
         $this->assertEquals(1, $this->response->json()['total']);
         $this->assertCount(1, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
@@ -84,7 +86,9 @@ class IndexTest extends TestCaseWithAuth
 
         // マッチする場合
         $this->json($this->method, $this->path, ['company_id' => $company1->company_id], ['Authorization' => 'Bearer ' . $this->token]);
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['company_id' => $company1->company_id])
+                       ->assertJsonMissing(['company_id' => $company2->company_id]);
         $this->assertEquals(2, $this->response->json()['total']);
         $this->assertCount(2, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
@@ -98,14 +102,16 @@ class IndexTest extends TestCaseWithAuth
 
     public function test_get_applies_with_status_filter()
     {
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.document_selection')]);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.exam_selection')]);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.interview_selection')]);
-        Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.offer')]);
+        $apply1 = Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.document_selection')]);
+        $apply2 = Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.exam_selection')]);
+        $apply3 = Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.interview_selection')]);
+        $apply4 = Apply::factory()->create(['user_id' => $this->user->user_id, 'status' => config('const.applies.status.offer')]);
 
         // マッチする場合
         $this->json($this->method, $this->path, ['status' => [config('const.applies.status.document_selection'), config('const.applies.status.interview_selection')]], ['Authorization' => 'Bearer ' . $this->token]);
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['apply_id' => $apply1->apply_id])
+                       ->assertJsonFragment(['apply_id' => $apply3->apply_id]);
         $this->assertEquals(2, $this->response->json()['total']);
         $this->assertCount(2, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
@@ -149,14 +155,15 @@ class IndexTest extends TestCaseWithAuth
         $company1 = Company::factory()->create(['user_id' => $this->user->user_id]);
         $company2 = Company::factory()->create(['user_id' => $this->user->user_id]);
 
-        Apply::factory()->create([
+        $apply1 = Apply::factory()->create([
             'user_id'     => $this->user->user_id,
             'company_id'  => $company1->company_id,
             'status'      => config('const.applies.status.document_selection'),
             'occupation'  => 'エンジニア',
         ]);
 
-        Apply::factory()->create([
+        $apply2 = Apply::factory()->create([
+            'user_id'     => $this->user->user_id,
             'company_id'  => $company2->company_id,
             'status'      => config('const.applies.status.interview_selection'),
             'occupation'  => '職種職種',
@@ -173,7 +180,8 @@ class IndexTest extends TestCaseWithAuth
             ],
             ['Authorization' => 'Bearer ' . $this->token]
         );
-        $this->response->assertStatus(Response::HTTP_OK);
+        $this->response->assertStatus(Response::HTTP_OK)
+                       ->assertJsonFragment(['apply_id' => $apply1->apply_id]);
         $this->assertEquals(1, $this->response->json()['total']);
         $this->assertCount(1, $this->response->json()['data']);
         $this->assertValidateResponse($this->method, $this->path, $this->response);
