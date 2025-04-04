@@ -119,6 +119,7 @@ return [
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
@@ -127,6 +128,7 @@ return [
         'cache' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
@@ -135,12 +137,14 @@ return [
         // 追加
         'refresh_token' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_REFRESH_TOKEN_DB', '2'),
         ],
         'blacklist_token' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_BLACKLIST_TOKEN_DB', '3'),
