@@ -97,7 +97,7 @@ class AuthService extends Service
 
             // リフレッシュしたトークンをブラックリストへ入れ、再利用を無効とする
             Redis::connection('blacklist_token')
-                ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
+                ->setex( $jti, env('JWT_TTL'), null ); // キーだけ入れておく
 
             return [
                 'access_token' => $newJWT,
@@ -140,7 +140,7 @@ class AuthService extends Service
 
             // ログアウト後に同一トークンでの再ログイン不可とする
             Redis::connection('blacklist_token')
-                ->set( $jti, null, 'EX', env('JWT_TTL') ); // キーだけ入れておく
+                ->setex( $jti, env('JWT_TTL'), null ); // キーだけ入れておく
 
             return true;
 
