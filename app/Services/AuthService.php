@@ -56,7 +56,7 @@ class AuthService extends Service
             // トークンリフレッシュ用にJWTを保存しておく
             $redis = Redis::connection('refresh_token');
             $redis->hmset( $jwt, ['user_id' => $user->user_id, 'jti' => $jti] );
-            $redis->expire( $jwt, env('JWT_REFRESH_TTL') );
+            $redis->expire( $jwt, (int) env('JWT_REFRESH_TTL') );
 
             return [
                 'access_token' => $jwt,
@@ -90,14 +90,14 @@ class AuthService extends Service
 
             // トークンリフレッシュ用にJWTを保存しておく
             $redis->hmset( $newJWT, ['user_id' => $userId, 'jti' => $newJti] );
-            $redis->expire( $newJWT, env('JWT_REFRESH_TTL') );
+            $redis->expire( $newJWT, (int) env('JWT_REFRESH_TTL') );
 
             // リフレッシュしたトークンを削除し、再リフレッシュを無効とする
             $redis->del($jwt);
 
             // リフレッシュしたトークンをブラックリストへ入れ、再利用を無効とする
             Redis::connection('blacklist_token')
-                ->setex( $jti, env('JWT_TTL'), null ); // キーだけ入れておく
+                ->setex( $jti, (int) env('JWT_TTL'), null ); // キーだけ入れておく
 
             return [
                 'access_token' => $newJWT,
@@ -140,7 +140,7 @@ class AuthService extends Service
 
             // ログアウト後に同一トークンでの再ログイン不可とする
             Redis::connection('blacklist_token')
-                ->setex( $jti, env('JWT_TTL'), null ); // キーだけ入れておく
+                ->setex( $jti, (int) env('JWT_TTL'), null ); // キーだけ入れておく
 
             return true;
 
