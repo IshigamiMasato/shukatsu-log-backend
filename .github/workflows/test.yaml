@@ -40,3 +40,5 @@ jobs:
         run: php artisan migrate --force
       - name: Check tables in DB
         run: mysql -h127.0.0.1 -P3306 -uroot -proot -e "SHOW TABLES IN test_shukatsu_log;"
+      - name: Run Test
+        run: ./vendor/bin/phpunit
