@@ -10,14 +10,14 @@ class OfferResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'offer_id' => $this->offer_id,
-            'apply_id' => $this->apply_id,
-            'offer_date' => $this->offer_date,
-            'salary' => $this->salary,
-            'condition' => $this->condition,
-            'memo' => $this->memo,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'offer_id' => $this->resource->offer_id,
+            'apply_id' => $this->resource->apply_id,
+            'offer_date' => $this->resource->offer_date,
+            'salary' => $this->resource->salary,
+            'condition' => $this->resource->condition,
+            'memo' => $this->resource->memo,
+            'created_at' => $this->resource->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->resource->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

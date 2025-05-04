@@ -10,13 +10,13 @@ class ExamResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'exam_id' => $this->exam_id,
-            'apply_id' => $this->apply_id,
-            'exam_date' => $this->exam_date,
-            'content' => $this->content,
-            'memo' => $this->memo,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'exam_id' => $this->resource->exam_id,
+            'apply_id' => $this->resource->apply_id,
+            'exam_date' => $this->resource->exam_date,
+            'content' => $this->resource->content,
+            'memo' => $this->resource->memo,
+            'created_at' => $this->resource->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->resource->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 }
