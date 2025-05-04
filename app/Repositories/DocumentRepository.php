@@ -4,6 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Document;
 
+/**
+ * @extends Repository<Document>
+ */
 class DocumentRepository extends Repository
 {
     public function __construct()

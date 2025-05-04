@@ -68,10 +68,4 @@ class AuthController extends Controller
 
         return $this->responseSuccess([]);
     }
-
-    public function checkAuth(Request $request): \Illuminate\Http\JsonResponse
-    {
-        // 認証middlewareに引っ掛からなければ200のみ返却
-        return response()->ok();
-    }
 }

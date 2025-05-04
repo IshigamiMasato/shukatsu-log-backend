@@ -159,6 +159,7 @@ class DocumentService extends Service
         // base64エンコード時に付与される不要なプレフィックスを削除
         $base64Data = preg_replace('/^data:[a-zA-Z0-9\/\+\-]+;base64,/', '', $base64File);
 
+        /** @var string|false $binaryFile */
         $binaryFile = base64_decode($base64Data);
         if ( $binaryFile === false ) {
             throw new \Exception('無効なファイルです。');

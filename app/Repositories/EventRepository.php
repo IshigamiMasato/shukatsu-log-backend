@@ -6,6 +6,9 @@ use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @extends Repository<Event>
+ */
 class EventRepository extends Repository
 {
     public function __construct()

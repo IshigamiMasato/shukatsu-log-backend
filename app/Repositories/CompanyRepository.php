@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Models\Company;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @extends Repository<Company>
+ */
 class CompanyRepository extends Repository
 {
     public function __construct()

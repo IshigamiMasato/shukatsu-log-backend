@@ -10,11 +10,11 @@ class FileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'file_id' => $this->file_id,
-            'document_id' => $this->document_id,
-            'name' => $this->name,
-            'path' => $this->path,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'file_id' => $this->resource->file_id,
+            'document_id' => $this->resource->document_id,
+            'name' => $this->resource->name,
+            'path' => $this->resource->path,
+            'created_at' => $this->resource->created_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

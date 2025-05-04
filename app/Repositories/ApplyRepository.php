@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Models\Apply;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @extends Repository<Apply>
+ */
 class ApplyRepository extends Repository
 {
     public function __construct()

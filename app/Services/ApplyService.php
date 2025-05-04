@@ -205,7 +205,7 @@ class ApplyService extends Service
         }
     }
 
-    public function getProcess(int $userId, int $applyId): \Illuminate\Database\Eloquent\Collection|array
+    public function getProcess(int $userId, int $applyId): \Illuminate\Support\Collection|array
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -235,7 +235,7 @@ class ApplyService extends Service
     /**
      * フロント用に選考プロセスを変換
      */
-    private function convertProcess(Apply $apply): \Illuminate\Database\Eloquent\Collection
+    private function convertProcess(Apply $apply): \Illuminate\Support\Collection
     {
         $documents = $apply->documents->map(function ($document) {
             return $document->setAttribute( 'type', config('const.applies.status.document_selection') );
