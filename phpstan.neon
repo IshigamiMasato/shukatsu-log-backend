@@ -8,7 +8,7 @@ parameters:
         - app/
 
     # Level 10 is the highest level
-    level: 3
+    level: 4
 
     ignoreErrors:
         - '#Method App\\Exceptions\\Handler::render\(\) should return Illuminate\\Http\\JsonResponse\|Illuminate\\Http\\Response but returns Symfony\\Component\\HttpFoundation\\Response#'
